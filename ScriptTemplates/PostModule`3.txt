@@ -1,0 +1,22 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+using Mirror;
+using RequestForMirror;
+
+public partial class $CLASSNAME$
+{
+    [Command]
+    protected override void CmdComputeResponse(string[] requestData, NetworkConnectionToClient sender = null)
+    {
+        HandleRequestOnServer(requestData, out var status, out string json, sender);
+        TargetReceivedResponse(connectionToClient, status, json);
+    }
+    
+    [TargetRpc]
+    public void TargetReceivedResponse(NetworkConnection target, RequestStatus status, string response)
+    {
+        HandleResponseOnClient(status, response);
+    }
+}
