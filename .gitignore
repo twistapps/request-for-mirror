@@ -12,8 +12,8 @@
 /[Uu]ser[Ss]ettings/
 
 # Package special
-/LICENSE.meta
-/CHANGELOG.md.meta
+# /LICENSE.meta
+# /CHANGELOG.md.meta
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
