@@ -41,7 +41,7 @@ namespace RequestForMirror.Editor.CodeGen
             builder.Append(";");
             builder.Endfile();
             
-            var scriptFolder = Path.Combine("Assets", CodeGen.GeneratedFolder);
+            var scriptFolder =CodeGen.GeneratedFolder;
             var outputPath = Path.ChangeExtension(Path.Combine(scriptFolder, ModularBehaviourClassname), ".cs");
             
             builder.SaveToCsFile(outputPath);

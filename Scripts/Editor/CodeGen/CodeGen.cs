@@ -12,21 +12,25 @@ namespace RequestForMirror.Editor.CodeGen
 {
     public static class CodeGen
     {
-        public static string GeneratedFolder => Path.Combine("Scripts", "Generated");
-        private static string TemplatesFolder => Path.Combine("Packages","ScriptTemplates");
-        private const string SettingsFilename = "CodeGenSettings";
+        private static string TwistappsFolder => Path.Combine("Assets", "TwistApps");
+        private static string CodeGenFolder => Path.Combine(TwistappsFolder, "CodeGen");
+        public static string GeneratedFolder => Path.Combine(AssetFolder, "GeneratedScripts");
+        
+        private static string AssetFolder => Path.Combine(TwistappsFolder, "RequestForMirror");
+        
+        //private const string PackageFolder = "request-for-mirror";
+        private static string TemplatesFolder => Path.Combine("Packages", "request-for-mirror", "ScriptTemplates");
         private const string DefaultTemplate = "CodeGenDefault";
 
         private static CodeGenSettings _settings;
-        private static string HomeFolder => Path.Combine("Assets", "Scripts", "RequestForMirror");
-        private static string SettingsFolder => Path.Combine(HomeFolder);
+        private const string SettingsFilename = "CodeGenSettings";
 
         private static string GetTxtPath(params string[] pathParts)
         {
             return Path.ChangeExtension(Path.Combine(pathParts), ".txt");
         }
 
-        private static string GetTxtTemplatePathWithGenericSupport(string folder, Type type)
+        private static string GetTxtTemplatePathWithGenericSupport(Type type)
         {
             Debug.Assert(type.BaseType != null, "type.BaseType != null");
             var parts = type.BaseType.Name.Split('`');
@@ -36,12 +40,12 @@ namespace RequestForMirror.Editor.CodeGen
             //Debug.Log(hasGenerics.ToString() + genericsAmount);
 
             var genericSpecificTemplate =
-                GetTxtPath(folder, $"{parentClassName}`{genericsAmount}");
+                GetTxtPath(TemplatesFolder, $"{parentClassName}`{genericsAmount}");
 
             //Debug.Log(genericSpecificTemplate);
 
             var basicTemplateForClass =
-                GetTxtPath(folder, parentClassName ?? DefaultTemplate);
+                GetTxtPath(TemplatesFolder, parentClassName ?? DefaultTemplate);
 
             if (hasGenerics && genericsAmount > 0 && File.Exists(genericSpecificTemplate))
                 return genericSpecificTemplate;
@@ -54,20 +58,20 @@ namespace RequestForMirror.Editor.CodeGen
         //     return Path.ChangeExtension(Path.Combine(folder, parentClassName ?? DefaultTemplate), ".txt");
         // }
 
-        private static string GetOutputCsPath(string folder, Type type)
+        private static string GetOutputCsPath(Type type)
         {
-            return Path.ChangeExtension(Path.Combine(folder, type.Name), ".cs");
+            return Path.ChangeExtension(Path.Combine(GeneratedFolder, type.Name), ".cs");
         }
 
         public static CodeGenSettings LoadSettingsAsset()
         {
-            var settingsPath = Path.ChangeExtension(Path.Combine(SettingsFolder, SettingsFilename), ".asset");
+            var settingsPath = Path.ChangeExtension(Path.Combine(CodeGenFolder, SettingsFilename), ".asset");
             _settings = (CodeGenSettings)AssetDatabase.LoadAssetAtPath(settingsPath, typeof(CodeGenSettings));
 
             if (_settings != null) return _settings;
             
             var asset = ScriptableObject.CreateInstance<CodeGenSettings>();
-            Directory.CreateDirectory(SettingsFolder);
+            Directory.CreateDirectory(CodeGenFolder);
             AssetDatabase.CreateAsset(asset, settingsPath);
             AssetDatabase.SaveAssets();
             
@@ -94,13 +98,11 @@ namespace RequestForMirror.Editor.CodeGen
         {
             var types = GetTypes();
 
-            var scriptFolder = Path.Combine("Assets", GeneratedFolder);
-
             var builder = new CodeGenTemplateBuilder();
 
             foreach (var type in types)
             {
-                var outputPath = GetOutputCsPath(scriptFolder, type);
+                var outputPath = GetOutputCsPath(type);
                 if (!forceRegenerateExisting && (_settings.generatedFiles?.Contains(outputPath) ?? false) &&
                     File.Exists(outputPath))
                 {
@@ -110,7 +112,7 @@ namespace RequestForMirror.Editor.CodeGen
                     continue;
                 }
 
-                var templatePath = GetTxtTemplatePathWithGenericSupport(TemplatesFolder, type);
+                var templatePath = GetTxtTemplatePathWithGenericSupport(type);
                 builder.SetVariable("CLASSNAME", type.Name);
                 builder.GenerateFromTemplate(templatePath);
                 builder.SaveToCsFile(outputPath);
@@ -129,8 +131,8 @@ namespace RequestForMirror.Editor.CodeGen
 
         private static void CleanupFolder()
         {
-            var scriptFolder = Path.Combine("Assets", GeneratedFolder);
-            var files = Directory.GetFiles(scriptFolder, "*.cs");
+            if (!Directory.Exists(GeneratedFolder)) return; 
+            var files = Directory.GetFiles(GeneratedFolder, "*.cs");
             foreach (var file in files)
             {
                 var className = Path.GetFileNameWithoutExtension(file);
