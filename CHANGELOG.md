@@ -1,3 +1,10 @@
+## [0.4.1](https://github.com/twistapps/request-for-mirror/compare/0.4.0...0.4.1) (2022-08-16)
+
+
+### Bug Fixes
+
+* "x" has no meta file, but it's in an immutable folder. The asset will be ignored. ([29f13b5](https://github.com/twistapps/request-for-mirror/commit/29f13b5da534bebbb475034817ad109b716a9fd9))
+
 # [0.4.0](https://github.com/twistapps/request-for-mirror/compare/0.3.0...0.4.0) (2022-08-16)
 
 
