@@ -1,0 +1,20 @@
+{
+  "name": "com.twistapps.request-for-mirror",
+  "displayName": "Request For Mirror",
+  "description": "Web-like requests with callbacks for Mirror Networking (Unity Engine)",
+  "version": "0.1.0",
+  "unity": "2020.3",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/twistapps/request-for-mirror.git"
+  },
+  "author": {
+    "name": "Twist! Apps",
+    "email": "twistappscontact@gmail.com",
+    "url": "https://github.com/twistapps"
+  },
+  "dependencies": {},
+  "keywords": [
+    "pattern"
+  ]
+}
