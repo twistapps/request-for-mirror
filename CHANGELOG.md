@@ -1,3 +1,17 @@
+# [0.4.0](https://github.com/twistapps/request-for-mirror/compare/0.3.0...0.4.0) (2022-08-16)
+
+
+### Bug Fixes
+
+* generated files folder structure ([5f70960](https://github.com/twistapps/request-for-mirror/commit/5f70960fa302833298ce556e7d65065da6fc345a))
+* ignore changelog meta file ([9b66a50](https://github.com/twistapps/request-for-mirror/commit/9b66a50fe182bc92b331046943de949bd51a6798))
+
+
+### Features
+
+* add required utils ([14927dd](https://github.com/twistapps/request-for-mirror/commit/14927ddb123b3d5d99879b1f7d441684fb0bdef7))
+* asmdef for the package ([c12d120](https://github.com/twistapps/request-for-mirror/commit/c12d120904b24dac4365d9ee04b9345044443a36))
+
 # [0.3.0](https://github.com/twistapps/request-for-mirror/compare/0.2.0...0.3.0) (2022-08-16)
 
 
