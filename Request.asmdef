@@ -1,0 +1,17 @@
+{
+    "name": "Request",
+    "rootNamespace": "RequestForMirror",
+    "references": [
+        "GUID:48b7cef44eb99914981fb1fc7f63ac31",
+        "GUID:30817c1a0e6d646d99c048fc403f5979"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
