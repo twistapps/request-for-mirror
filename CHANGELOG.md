@@ -1,3 +1,11 @@
+# [0.5.0](https://github.com/twistapps/request-for-mirror/compare/0.4.1...0.5.0) (2022-08-17)
+
+
+### Features
+
+* get request by classname; fulfill ([#1](https://github.com/twistapps/request-for-mirror/issues/1)) ([b72149b](https://github.com/twistapps/request-for-mirror/commit/b72149bdd28257ae20bdb4053f8c572c68b9ce12))
+* use define symbol for integration ([#1](https://github.com/twistapps/request-for-mirror/issues/1)) ([6da8a0a](https://github.com/twistapps/request-for-mirror/commit/6da8a0a715ac5018503e1733cc51a2aa4876307b))
+
 ## [0.4.1](https://github.com/twistapps/request-for-mirror/compare/0.4.0...0.4.1) (2022-08-16)
 
 
