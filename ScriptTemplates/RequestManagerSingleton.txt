@@ -1,0 +1,23 @@
+    
+    private static RequestManager _instance;
+    private static RequestManager $INSTANCE$ => _instance == null ? FindObjectOfType<RequestManager>() : _instance;
+    private void InitializeSingleton()
+    {
+        if ($INSTANCE$ != this)
+        {
+            #if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                Debug.LogError("There are more than one RequestManager in scene. RequestManager should be Singleton.");
+                return;
+            }
+            #endif
+        
+            Destroy(gameObject);
+            return;
+        }
+        _instance = this;
+    }
+
+    private void Awake() => InitializeSingleton();
+    private void Reset() => InitializeSingleton();
