@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if MODULA
+using System;
 using Modula;
 using Modula.Common;
 using Modula.Optimization;
@@ -113,3 +114,4 @@ namespace RequestForMirror.Integrations.Modula
         }
     }
 }
+#endif
