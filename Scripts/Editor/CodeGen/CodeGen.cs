@@ -6,7 +6,6 @@ using RequestForMirror.BloomTools;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
-using Debug = System.Diagnostics.Debug;
 
 namespace RequestForMirror.Editor.CodeGen
 {
@@ -19,46 +18,36 @@ namespace RequestForMirror.Editor.CodeGen
         private static CodeGenSettings _settings;
 
         private static string TwistappsFolder => Path.Combine("Assets", "TwistApps");
+        public static string TemplatesFolder => Path.Combine("Packages", PackageName, "ScriptTemplates");
+        
         private static string CodeGenFolder => Path.Combine(TwistappsFolder, "CodeGen");
+        private static string AssetFolder => Path.Combine(TwistappsFolder, "RequestForMirror");
+        
         public static string GeneratedFolder => Path.Combine(AssetFolder, "GeneratedScripts");
 
-        private static string AssetFolder => Path.Combine(TwistappsFolder, "RequestForMirror");
-
-        //private const string PackageFolder = "request-for-mirror";
-        public static string TemplatesFolder => Path.Combine("Packages", PackageName, "ScriptTemplates");
-
+        
         private static string GetTxtPath(params string[] pathParts)
         {
             return Path.ChangeExtension(Path.Combine(pathParts), ".txt");
         }
 
-        private static string GetTxtTemplatePathWithGenericSupport(Type type)
+        private static string FindTxtTemplate(Type type)
         {
-            Debug.Assert(type.BaseType != null, "type.BaseType != null");
             var parts = type.BaseType.Name.Split('`');
             var parentClassName = parts.FirstOrDefault();
-            var hasGenerics = int.TryParse(parts.LastOrDefault(), out var genericsAmount);
-
-            //Debug.Log(hasGenerics.ToString() + genericsAmount);
+            var hasGenericTypes = int.TryParse(parts.LastOrDefault(), out var genericArgsAmount);
 
             var genericSpecificTemplate =
-                GetTxtPath(TemplatesFolder, $"{parentClassName}`{genericsAmount}");
-
-            //Debug.Log(genericSpecificTemplate);
+                GetTxtPath(TemplatesFolder, $"{parentClassName}`{genericArgsAmount}");
 
             var basicTemplateForClass =
                 GetTxtPath(TemplatesFolder, parentClassName ?? DefaultTemplate);
 
-            if (hasGenerics && genericsAmount > 0 && File.Exists(genericSpecificTemplate))
+            if (hasGenericTypes && genericArgsAmount > 0 && File.Exists(genericSpecificTemplate))
                 return genericSpecificTemplate;
-            return basicTemplateForClass;
+            else
+                return basicTemplateForClass;
         }
-
-        // private static string GetTxtTemplatePath(string folder, Type type)
-        // {
-        //     var parentClassName = type.BaseType?.Name.Split('`').First();
-        //     return Path.ChangeExtension(Path.Combine(folder, parentClassName ?? DefaultTemplate), ".txt");
-        // }
 
         private static string GetOutputCsPath(Type type)
         {
@@ -67,11 +56,12 @@ namespace RequestForMirror.Editor.CodeGen
 
         public static CodeGenSettings LoadSettingsAsset()
         {
-            var settingsPath = Path.ChangeExtension(Path.Combine(CodeGenFolder, SettingsFilename), ".asset");
+            var settingsPath = Path.Combine(CodeGenFolder, SettingsFilename) + ".asset";
             _settings = (CodeGenSettings)AssetDatabase.LoadAssetAtPath(settingsPath, typeof(CodeGenSettings));
 
             if (_settings != null) return _settings;
 
+            //if settings file not found at desired location
             var asset = ScriptableObject.CreateInstance<CodeGenSettings>();
             Directory.CreateDirectory(CodeGenFolder);
             AssetDatabase.CreateAsset(asset, settingsPath);
@@ -84,8 +74,7 @@ namespace RequestForMirror.Editor.CodeGen
         [DidReloadScripts]
         private static void OnScriptsReloaded()
         {
-            LoadSettingsAsset();
-            if (_settings.autoGenerateOnCompile)
+            if (LoadSettingsAsset().autoGenerateOnCompile)
                 GenerateScripts();
         }
 
@@ -99,22 +88,22 @@ namespace RequestForMirror.Editor.CodeGen
         public static void GenerateScripts(bool forceRegenerateExisting = false)
         {
             var types = GetTypes();
-
             var builder = new CodeGenTemplateBuilder();
 
             foreach (var type in types)
             {
                 var outputPath = GetOutputCsPath(type);
-                if (!forceRegenerateExisting && (_settings.generatedFiles?.Contains(outputPath) ?? false) &&
-                    File.Exists(outputPath))
+                
+                if (!forceRegenerateExisting 
+                    && (_settings.generatedFiles?.Contains(outputPath) ?? false) 
+                    && File.Exists(outputPath))
                 {
                     if (_settings.debugMode)
-                        UnityEngine.Debug.Log(
-                            $"Skipping {outputPath} because it already has been generated previously.");
+                        Debug.Log($"Skipping {outputPath} because it has already been generated previously.");
                     continue;
                 }
 
-                var templatePath = GetTxtTemplatePathWithGenericSupport(type);
+                var templatePath = FindTxtTemplate(type);
                 builder.SetVariable("CLASSNAME", type.Name);
                 builder.GenerateFromTemplate(templatePath);
                 builder.SaveToCsFile(outputPath);
