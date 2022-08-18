@@ -9,7 +9,7 @@ namespace RequestForMirror.Editor.CodeGen
 {
     public static class RequestManagerGenerator
     {
-        private const string ModularBehaviourClassname = "RequestManager";
+        private const string RequestManagerClassname = "RequestManager";
         private const string SingletonInstanceName = "Instance";
 
         private static CodeGenSettings _settings;
@@ -28,10 +28,16 @@ namespace RequestForMirror.Editor.CodeGen
 
         private static void Cleanup()
         {
-            var scriptFolder = CodeGen.GeneratedFolder;
-            var outputPath = Path.ChangeExtension(Path.Combine(scriptFolder, ModularBehaviourClassname), ".cs");
-            if (File.Exists(outputPath))
-                File.Delete(outputPath);
+            var requestManagerPath = Path.Combine(CodeGen.GeneratedFolder, RequestManagerClassname);
+            var outputPaths = new[]
+            {
+                Path.ChangeExtension(requestManagerPath, ".cs"),
+                Path.ChangeExtension(requestManagerPath, ".meta")
+            };
+
+            foreach (var path in outputPaths)
+                if (File.Exists(path))
+                    File.Delete(path);
         }
 
 #if MODULA
@@ -48,7 +54,7 @@ namespace RequestForMirror.Editor.CodeGen
 
             builder.EmptyLines(2);
 
-            builder.Class(Scope.Public, ModularBehaviourClassname, typeof(ModularBehaviour));
+            builder.Class(Scope.Public, RequestManagerClassname, typeof(ModularBehaviour));
             builder.AppendLine(
                 "public override TypedList<IModule> AvailableModules { get; } = new TypedList<IModule>()");
             foreach (var type in types) builder.AppendLine(".Add<$>()", type.Name);
@@ -65,7 +71,7 @@ namespace RequestForMirror.Editor.CodeGen
             builder.Endfile();
 
             var scriptFolder = CodeGen.GeneratedFolder;
-            var outputPath = Path.ChangeExtension(Path.Combine(scriptFolder, ModularBehaviourClassname), ".cs");
+            var outputPath = Path.ChangeExtension(Path.Combine(scriptFolder, RequestManagerClassname), ".cs");
 
             builder.SaveToCsFile(outputPath);
         }
