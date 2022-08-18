@@ -12,6 +12,8 @@ namespace RequestForMirror.Editor.CodeGen
 {
     public static class CodeGen
     {
+        private const string PackageName = "com.twistapps.request-for-mirror";
+    
         private static string TwistappsFolder => Path.Combine("Assets", "TwistApps");
         private static string CodeGenFolder => Path.Combine(TwistappsFolder, "CodeGen");
         public static string GeneratedFolder => Path.Combine(AssetFolder, "GeneratedScripts");
@@ -19,7 +21,7 @@ namespace RequestForMirror.Editor.CodeGen
         private static string AssetFolder => Path.Combine(TwistappsFolder, "RequestForMirror");
         
         //private const string PackageFolder = "request-for-mirror";
-        public static string TemplatesFolder => Path.Combine("Packages", "request-for-mirror", "ScriptTemplates");
+        public static string TemplatesFolder => Path.Combine("Packages", PackageName, "ScriptTemplates");
         private const string DefaultTemplate = "CodeGenDefault";
 
         private static CodeGenSettings _settings;
