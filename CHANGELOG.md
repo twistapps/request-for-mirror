@@ -1,3 +1,15 @@
+# [0.7.0](https://github.com/twistapps/request-for-mirror/compare/0.6.0...0.7.0) (2022-08-18)
+
+
+### Bug Fixes
+
+* naming, possible duplication fix ([e6900f9](https://github.com/twistapps/request-for-mirror/commit/e6900f971643865ee6b6fd51f5725de39d76fe35))
+
+
+### Features
+
+* resolve [#7](https://github.com/twistapps/request-for-mirror/issues/7) ([883f149](https://github.com/twistapps/request-for-mirror/commit/883f1499739ab96c77bd9a8d3ad0f921f88a9c42))
+
 # [0.6.0](https://github.com/twistapps/request-for-mirror/compare/0.5.1...0.6.0) (2022-08-18)
 
 
