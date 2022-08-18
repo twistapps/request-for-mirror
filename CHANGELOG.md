@@ -1,3 +1,10 @@
+## [0.5.1](https://github.com/twistapps/request-for-mirror/compare/0.5.0...0.5.1) (2022-08-18)
+
+
+### Bug Fixes
+
+* access levels ([9666301](https://github.com/twistapps/request-for-mirror/commit/966630187c2481637a6af0f2a548e7b55e7f1e99))
+
 # [0.5.0](https://github.com/twistapps/request-for-mirror/compare/0.4.1...0.5.0) (2022-08-17)
 
 
