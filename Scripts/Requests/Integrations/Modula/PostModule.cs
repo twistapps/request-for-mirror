@@ -9,6 +9,7 @@ namespace RequestForMirror.Integrations.Modula
     public abstract class PostModule<TRequest, TResponse> : Post<TRequest, TResponse>, IModule
     {
         private ModuleDefaultImplementation _defaultImplementation;
+
         // ReSharper disable once MemberCanBePrivate.Global
         protected ModuleDefaultImplementation DefaultImplementation
         {
@@ -63,6 +64,7 @@ namespace RequestForMirror.Integrations.Modula
     public abstract class PostModule<TRequest, TRequest2, TResponse> : Post<TRequest, TRequest2, TResponse>, IModule
     {
         private ModuleDefaultImplementation _defaultImplementation;
+
         // ReSharper disable once MemberCanBePrivate.Global
         protected ModuleDefaultImplementation DefaultImplementation
         {

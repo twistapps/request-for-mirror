@@ -9,6 +9,7 @@ namespace RequestForMirror.Integrations.Modula
     public abstract class FetchModule<TResponse> : Fetch<TResponse>, IModule
     {
         private ModuleDefaultImplementation _defaultImplementation;
+
         // ReSharper disable once MemberCanBePrivate.Global
         protected ModuleDefaultImplementation DefaultImplementation
         {

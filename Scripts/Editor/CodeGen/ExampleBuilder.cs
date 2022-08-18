@@ -3,7 +3,7 @@
 namespace RequestForMirror.Editor.CodeGen
 {
     /// <summary>
-    /// Generates example MonoBehaviour that prints "Hello World" to console on Start().
+    ///     Generates example MonoBehaviour that prints "Hello World" to console on Start().
     /// </summary>
     public class ExampleBuilder : CodeGenBuilder
     {

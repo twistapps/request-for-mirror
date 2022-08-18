@@ -13,19 +13,19 @@ namespace RequestForMirror.Editor.CodeGen
     public static class CodeGen
     {
         private const string PackageName = "com.twistapps.request-for-mirror";
-    
+        private const string DefaultTemplate = "CodeGenDefault";
+        private const string SettingsFilename = "CodeGenSettings";
+
+        private static CodeGenSettings _settings;
+
         private static string TwistappsFolder => Path.Combine("Assets", "TwistApps");
         private static string CodeGenFolder => Path.Combine(TwistappsFolder, "CodeGen");
         public static string GeneratedFolder => Path.Combine(AssetFolder, "GeneratedScripts");
-        
+
         private static string AssetFolder => Path.Combine(TwistappsFolder, "RequestForMirror");
-        
+
         //private const string PackageFolder = "request-for-mirror";
         public static string TemplatesFolder => Path.Combine("Packages", PackageName, "ScriptTemplates");
-        private const string DefaultTemplate = "CodeGenDefault";
-
-        private static CodeGenSettings _settings;
-        private const string SettingsFilename = "CodeGenSettings";
 
         private static string GetTxtPath(params string[] pathParts)
         {
@@ -71,12 +71,12 @@ namespace RequestForMirror.Editor.CodeGen
             _settings = (CodeGenSettings)AssetDatabase.LoadAssetAtPath(settingsPath, typeof(CodeGenSettings));
 
             if (_settings != null) return _settings;
-            
+
             var asset = ScriptableObject.CreateInstance<CodeGenSettings>();
             Directory.CreateDirectory(CodeGenFolder);
             AssetDatabase.CreateAsset(asset, settingsPath);
             AssetDatabase.SaveAssets();
-            
+
             _settings = asset;
             return _settings;
         }
@@ -133,12 +133,12 @@ namespace RequestForMirror.Editor.CodeGen
 
         private static void CleanupFolder()
         {
-            if (!Directory.Exists(GeneratedFolder)) return; 
+            if (!Directory.Exists(GeneratedFolder)) return;
             var files = Directory.GetFiles(GeneratedFolder, "*.cs");
             foreach (var file in files)
             {
                 var className = Path.GetFileNameWithoutExtension(file);
-                
+
                 //if original class that was using IMarkedForCodeGen interface has been deleted,
                 //remove the auto-generated code too
                 if (!TypeIsMarkedWithInterface(className))
