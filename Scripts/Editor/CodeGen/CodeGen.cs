@@ -78,11 +78,45 @@ namespace RequestForMirror.Editor.CodeGen
                 GenerateScripts();
         }
 
+        /// <summary>
+        /// Find types in assembly that should be complemented with generated code.
+        /// </summary>
+        /// <returns>Array of types derived from any abstract class implementing IMarkedForCodegen.</returns>
         public static IEnumerable<Type> GetTypes()
         {
             //string baseType = "Fetch`1";
             return Utils.GetDerivedFrom<IMarkedForCodeGen>(typeof(IMarkedForCodeGen))
                 .Where(type => !type.Name.Contains('`') && !type.IsAbstract);
+        }
+
+        public static void AddPartialModifierToClassDefinition(string typeName)
+        {
+            var guids = AssetDatabase.FindAssets(typeName);
+            var scriptFilePaths = guids.Select(AssetDatabase.GUIDToAssetPath);
+            foreach (var path in scriptFilePaths)
+            {
+                var modified = false;
+                var lines = File.ReadAllLines(path);
+                for (var i = 0; i < lines.Length; i++)
+                {
+                    var line = lines[i];
+                    if (line == string.Empty) continue;
+                    var isClassDefinition = line.Contains("class " + typeName);
+                    if (!isClassDefinition) continue;
+                    if (line.Contains("partial")) break;
+
+                    var insertionIndex = line.IndexOf("class", StringComparison.Ordinal);
+                    lines[i] = line.Insert(insertionIndex, "partial ");
+                    modified = true;
+                    break;
+                }
+
+                if (modified)
+                {
+                    File.WriteAllLines(path, lines);
+                    if (_settings.debugMode) Debug.Log($"Adding 'partial' modifier to {path}");
+                }
+            }
         }
 
         public static void GenerateScripts(bool forceRegenerateExisting = false)
@@ -93,9 +127,10 @@ namespace RequestForMirror.Editor.CodeGen
             foreach (var type in types)
             {
                 var outputPath = GetOutputCsPath(type);
-                
+
+                var generatedFileIsRegistered = _settings.generatedFiles?.Contains(outputPath) ?? false;
                 if (!forceRegenerateExisting 
-                    && (_settings.generatedFiles?.Contains(outputPath) ?? false) 
+                    && generatedFileIsRegistered 
                     && File.Exists(outputPath))
                 {
                     if (_settings.debugMode)
@@ -106,10 +141,16 @@ namespace RequestForMirror.Editor.CodeGen
                 var templatePath = FindTxtTemplate(type);
                 builder.SetVariable("CLASSNAME", type.Name);
                 builder.GenerateFromTemplate(templatePath);
-                builder.SaveToCsFile(outputPath);
 
-                if (!_settings.generatedFiles?.Contains(outputPath) ?? false)
-                    _settings.generatedFiles.Add(outputPath);
+                var autoRefresh = "kAutoRefresh";
+                var autoRefreshState = EditorPrefs.GetInt(autoRefresh);
+                EditorPrefs.SetInt(autoRefresh, 0);
+                builder.SaveToCsFile(outputPath);
+                AddPartialModifierToClassDefinition(type.Name);
+                EditorPrefs.SetInt(autoRefresh, autoRefreshState);
+                
+                if (!generatedFileIsRegistered)
+                    _settings.generatedFiles!.Add(outputPath);
             }
 
             CleanupFolder();
