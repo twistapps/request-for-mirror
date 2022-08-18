@@ -1,3 +1,12 @@
+## [0.5.2](https://github.com/twistapps/request-for-mirror/compare/0.5.1...0.5.2) (2022-08-18)
+
+
+### Bug Fixes
+
+* Package path ([154b7bb](https://github.com/twistapps/request-for-mirror/commit/154b7bb5355d4dc738e404c35a92cab4307d2380))
+* release notes config ([deae117](https://github.com/twistapps/request-for-mirror/commit/deae117d2fb46af3e8076932f388d34bbd9a4cf9))
+* show refactors in changelog ([6377f1b](https://github.com/twistapps/request-for-mirror/commit/6377f1bd5a0e683569aa8e552ae6585781704294))
+
 ## [0.5.1](https://github.com/twistapps/request-for-mirror/compare/0.5.0...0.5.1) (2022-08-18)
 
 
