@@ -1,3 +1,10 @@
+## [0.7.1](https://github.com/twistapps/request-for-mirror/compare/0.7.0...0.7.1) (2022-08-18)
+
+
+### Bug Fixes
+
+* log important notice regardless of debug mode setting ([846a5f6](https://github.com/twistapps/request-for-mirror/commit/846a5f6c9e61f9f7383f39453bead5b6258ec7cc))
+
 # [0.7.0](https://github.com/twistapps/request-for-mirror/compare/0.6.0...0.7.0) (2022-08-18)
 
 
