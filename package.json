@@ -2,7 +2,7 @@
   "name": "com.twistapps.request-for-mirror",
   "displayName": "Request For Mirror",
   "description": "Web-like requests with callbacks for Mirror Networking (Unity Engine)",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "unity": "2020.3",
   "repository": {
     "type": "git",

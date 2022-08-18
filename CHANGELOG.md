@@ -1,3 +1,20 @@
+# [0.6.0](https://github.com/twistapps/request-for-mirror/compare/0.5.1...0.6.0) (2022-08-18)
+
+
+### Bug Fixes
+
+* cleanup metafiles ([7b2abfa](https://github.com/twistapps/request-for-mirror/commit/7b2abfa8b8b875c0e33c42c559601ae53be72f5f))
+* Package path ([154b7bb](https://github.com/twistapps/request-for-mirror/commit/154b7bb5355d4dc738e404c35a92cab4307d2380))
+* release notes config ([deae117](https://github.com/twistapps/request-for-mirror/commit/deae117d2fb46af3e8076932f388d34bbd9a4cf9))
+* rollback release workflow ([3ec68b0](https://github.com/twistapps/request-for-mirror/commit/3ec68b099cde123ecb8679df279aa2574ba37a07))
+* show refactors in changelog ([6377f1b](https://github.com/twistapps/request-for-mirror/commit/6377f1bd5a0e683569aa8e552ae6585781704294))
+
+
+### Features
+
+* codegen ignores specified types ([de294a1](https://github.com/twistapps/request-for-mirror/commit/de294a1247d9af4a0891a38200af54155e8b79c8))
+* delete generated scripts if original is deleted ([92d3754](https://github.com/twistapps/request-for-mirror/commit/92d375400e0b2cac26f3a89983af7d4fcf1b4f7a))
+
 ## [0.5.2](https://github.com/twistapps/request-for-mirror/compare/0.5.1...0.5.2) (2022-08-18)
 
 
