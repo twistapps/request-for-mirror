@@ -9,13 +9,13 @@ namespace RequestForMirror.Editor.CodeGen
         private CodeGenSettings _settings;
 
         private UnityEditor.Editor _settingsEditor;
-    
+
         private void OnGUI()
         {
             CreateCachedSettingsEditor();
             EditorGUILayout.BeginVertical(new GUIStyle("ObjectPickerBackground"));
             EditorGUILayout.LabelField("CodeGen settings", new GUIStyle("BoldLabel"));
-        
+
             ChangeLabelWidth(250);
             EditorGUI.indentLevel++;
             _settings.autoGenerateOnCompile =
@@ -55,7 +55,7 @@ namespace RequestForMirror.Editor.CodeGen
             EditorGUILayout.BeginVertical(new GUIStyle("ObjectPickerBackground"));
             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
             EditorGUILayout.LabelField("Create codegen-supported script:", new GUIStyle("BoldLabel"));
-        
+
             EditorGUI.indentLevel++;
             EditorGUILayout.LabelField("Classname");
             EditorGUI.indentLevel++;

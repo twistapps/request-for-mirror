@@ -10,10 +10,11 @@ namespace RequestForMirror
     public abstract class Fetch<TResponse> : NetworkBehaviour, IMarkedForCodeGen
     {
         public delegate void RequestFailEvent(string reason);
+
         public delegate void ResponseDelegate(TResponse res);
 
         protected RequestFailEvent onError;
-        protected ResponseDelegate onResponse; 
+        protected ResponseDelegate onResponse;
 
         protected RequestResponse<TResponse> res;
 
@@ -52,7 +53,8 @@ namespace RequestForMirror
         /// <param name="status"></param>
         /// <param name="json">TResponse in json format</param>
         /// <param name="sender">Autofilled by mirror</param>
-        protected virtual void HandleRequestOnServer(out RequestStatus status, out string json, NetworkConnectionToClient sender = null)
+        protected virtual void HandleRequestOnServer(out RequestStatus status, out string json,
+            NetworkConnectionToClient sender = null)
         {
             res = new RequestResponse<TResponse>();
             this.sender = sender;
