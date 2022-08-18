@@ -41,12 +41,12 @@ namespace RequestForMirror.Editor.CodeGen
         }
 
 #if MODULA
-        public static void GenerateScripts()
+        public static void GenerateScripts(params string[] ignored)
         {
             var builder = new CodeGenTemplateBuilder();
             var types = CodeGen.GetTypes()
                 //filter modules only
-                .Where(type => typeof(IModule).IsAssignableFrom(type)).ToArray();
+                .Where(type => typeof(IModule).IsAssignableFrom(type) && !ignored.Contains(type.Name)).ToArray();
 
             builder.Using("Modula");
             builder.Using("Modula.Common");
