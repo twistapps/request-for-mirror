@@ -54,21 +54,9 @@ namespace RequestForMirror.Editor.CodeGen
             return Path.ChangeExtension(Path.Combine(GeneratedFolder, type.Name), ".cs");
         }
 
-        public static CodeGenSettings LoadSettingsAsset()
+        private static CodeGenSettings LoadSettingsAsset()
         {
-            var settingsPath = Path.Combine(CodeGenFolder, SettingsFilename) + ".asset";
-            _settings = (CodeGenSettings)AssetDatabase.LoadAssetAtPath(settingsPath, typeof(CodeGenSettings));
-
-            if (_settings != null) return _settings;
-
-            //if settings file not found at desired location
-            var asset = ScriptableObject.CreateInstance<CodeGenSettings>();
-            Directory.CreateDirectory(CodeGenFolder);
-            AssetDatabase.CreateAsset(asset, settingsPath);
-            AssetDatabase.SaveAssets();
-
-            _settings = asset;
-            return _settings;
+            return EditorUtils.LoadSettings<CodeGenSettings>();
         }
 
         [DidReloadScripts]
