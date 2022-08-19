@@ -43,28 +43,35 @@ namespace RequestForMirror.Editor.CodeGen
 
             stopwatch.Stop();
             if (stopwatch.ElapsedMilliseconds > 0)
-                Debug.Log($"GetDerivedFrom<{typeof(T).Name}>() took {stopwatch.ElapsedMilliseconds}ms to execute.");
+                Debug.Log($"GetDerivedFrom<{typeof(T).Name}>() took {stopwatch.ElapsedMilliseconds}ms to execute");
             return foundArr;
         }
 
-        private static readonly Dictionary<Type, Object> SettingsAssets = new Dictionary<Type, object>();
+        private static readonly Dictionary<Type, Object> SettingsAssets = new Dictionary<Type, Object>();
         public static T LoadSettings<T>() where T : ScriptableObject
         {
             var settingsType = typeof(T);
+            T asset;
             if (SettingsAssets.ContainsKey(settingsType))
-                return (T)SettingsAssets[settingsType];
+            {
+                asset = (T)SettingsAssets[settingsType];
+                if (asset != null) 
+                    return asset;
+                
+                SettingsAssets.Remove(settingsType);
+            }
 
             var settingsPath = Path.Combine(TwistappsFolder, settingsType.Name) + ".asset";
             var settings = AssetDatabase.LoadAssetAtPath(settingsPath, settingsType);
 
-            if (settings != null)
+            if ((T)settings != null)
             {
                 SettingsAssets.Add(settingsType, settings);
                 return (T)settings;
             }
             
             //if settings file not found at desired location
-            var asset = ScriptableObject.CreateInstance<T>();
+            asset = ScriptableObject.CreateInstance<T>();
             Directory.CreateDirectory(TwistappsFolder);
             AssetDatabase.CreateAsset(asset, settingsPath);
             AssetDatabase.SaveAssets();
