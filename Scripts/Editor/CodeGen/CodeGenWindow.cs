@@ -86,18 +86,18 @@ namespace RequestForMirror.Editor.CodeGen
             EditorGUILayout.EndVertical();
         }
 
-        [MenuItem("Tools/MyCodeGen/CodeGenMenu")]
+        [MenuItem("Tools/Twist Apps/CodeGen Settings")]
         public static void ShowWindow()
         {
-            var window = GetWindow(typeof(CodeGenWindow));
-            window.minSize = new Vector2(460, 300);
+            var window = GetWindow(typeof(CodeGenWindow), false, "CodeGen settings");
+            window.minSize = new Vector2(420, 300);
         }
 
         //creates editor to track changes made to _settings so they are saved to asset as soon as, for example, checkbox is marked.
         private void CreateCachedSettingsEditor()
         {
             if (_settings != null && _settingsEditor != null) return;
-            _settings = CodeGen.LoadSettingsAsset();
+            _settings = EditorUtils.LoadSettings<CodeGenSettings>();
             _settingsEditor = UnityEditor.Editor.CreateEditor(_settings);
         }
 
