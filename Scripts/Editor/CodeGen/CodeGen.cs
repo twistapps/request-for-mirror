@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using RequestForMirror.BloomTools;
+using RequestForMirror.Utils;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
@@ -85,7 +85,7 @@ namespace RequestForMirror.Editor.CodeGen
         public static IEnumerable<Type> GetTypes()
         {
             //string baseType = "Fetch`1";
-            return Utils.GetDerivedFrom<IMarkedForCodeGen>(typeof(IMarkedForCodeGen))
+            return EditorUtils.GetDerivedFrom<IMarkedForCodeGen>(typeof(IMarkedForCodeGen))
                 .Where(type => !type.Name.Contains('`') && !type.IsAbstract);
         }
 
