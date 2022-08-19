@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
 
 namespace RequestForMirror.Editor.CodeGen
 {
@@ -26,7 +27,17 @@ namespace RequestForMirror.Editor.CodeGen
             var parts = text.Split(SeparatorSymbol);
             for (var i = 0; i < parts.Length; i++)
             {
-                if (i % 2 == 1) parts[i] = _valuesToReplace[parts[i]];
+                if (i % 2 == 1)
+                {
+                    if (!_valuesToReplace.ContainsKey(parts[i]))
+                    {
+                        Debug.LogWarning($"CodeGen: variable ${parts[i]}$ is not set for template {Path.GetFileName(templatePath)}. " +
+                                         "It will be replaced with empty string");
+                        parts[i] = string.Empty;
+                        continue;
+                    }
+                    parts[i] = _valuesToReplace[parts[i]];
+                }
 
                 Append(parts[i]);
             }
