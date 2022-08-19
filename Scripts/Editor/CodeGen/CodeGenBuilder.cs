@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using RequestForMirror.BloomTools;
+using RequestForMirror.Utils;
 using UnityEditor;
 
 namespace RequestForMirror.Editor.CodeGen
@@ -60,12 +60,6 @@ namespace RequestForMirror.Editor.CodeGen
         public CodeGenBuilder Append(string line, params string[] lineInsertions)
         {
             var parts = line.Split(SeparatorSymbol);
-
-            // if (parts.Length == 1)
-            // {
-            //     _stringBuilder.Append(line);
-            //     return this;
-            // }
 
             var counter = 0;
             foreach (var (text, insertion) in parts.ToTuplesWith(lineInsertions, true))

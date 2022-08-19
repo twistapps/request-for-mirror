@@ -15,7 +15,7 @@ namespace RequestForMirror.Editor.CodeGen
             string[] movedFromAssetPaths)
         {
             if (deletedAssets.Length < 1) return;
-            var settings = CodeGen.LoadSettingsAsset();
+            var settings = EditorUtils.LoadSettings<CodeGenSettings>();
             var generatedFileNames = settings.generatedFiles.Select(Path.GetFileName).ToArray();
             
             foreach (var deletedAsset in deletedAssets)

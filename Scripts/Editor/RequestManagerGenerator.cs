@@ -17,7 +17,7 @@ namespace RequestForMirror.Editor.CodeGen
         [DidReloadScripts]
         private static void OnScriptsReloaded()
         {
-            _settings = CodeGen.LoadSettingsAsset();
+            _settings = EditorUtils.LoadSettings<CodeGenSettings>();
             if (_settings.autoGenerateOnCompile)
 #if MODULA
                 GenerateScripts();
