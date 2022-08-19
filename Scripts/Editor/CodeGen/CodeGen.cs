@@ -56,7 +56,8 @@ namespace RequestForMirror.Editor.CodeGen
 
         private static CodeGenSettings LoadSettingsAsset()
         {
-            return EditorUtils.LoadSettings<CodeGenSettings>();
+            _settings = EditorUtils.LoadSettings<CodeGenSettings>();
+            return _settings;
         }
 
         [DidReloadScripts]
