@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,14 +9,14 @@ using RequestForMirror;
 public partial class $CLASSNAME$
 {
     [Command]
-    protected override void CmdComputeResponse(string[] requestData, NetworkConnectionToClient sender = null)
+    protected override void CmdComputeResponse($BASE_GENERIC_ARGUMENT$ requestData, $BASE_GENERIC_ARGUMENT_2$ requestData2, NetworkConnectionToClient sender = null)
     {
-        HandleRequestOnServer(requestData, out var status, out string json, sender);
-        TargetReceivedResponse(connectionToClient, status, json);
+        HandleRequestOnServer(requestData, requestData2, out var status, out $BASE_GENERIC_ARGUMENT_3$ response, sender);
+        TargetReceivedResponse(connectionToClient, status, response);
     }
     
     [TargetRpc]
-    public void TargetReceivedResponse(NetworkConnection target, RequestStatus status, string response)
+    public void TargetReceivedResponse(NetworkConnection target, RequestStatus status, $BASE_GENERIC_ARGUMENT_3$ response)
     {
         HandleResponseOnClient(status, response);
     }

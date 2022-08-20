@@ -128,7 +128,7 @@ namespace RequestForMirror.Editor.CodeGen
                 }
 
                 var templatePath = FindTxtTemplate(type);
-                builder.SetVariable("CLASSNAME", type.Name);
+                builder.SetVariablesForType(type);
                 builder.GenerateFromTemplate(templatePath);
 
                 var autoRefresh = "kAutoRefresh";
