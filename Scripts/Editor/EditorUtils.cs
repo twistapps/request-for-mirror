@@ -8,7 +8,7 @@ using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Object = System.Object;
 
-namespace RequestForMirror.Editor.CodeGen
+namespace RequestForMirror.Editor
 {
     public class EditorUtils
     {
@@ -48,7 +48,7 @@ namespace RequestForMirror.Editor.CodeGen
         }
 
         private static readonly Dictionary<Type, Object> SettingsAssets = new Dictionary<Type, Object>();
-        public static T LoadSettings<T>() where T : ScriptableObject
+        public static T LoadSettings<T>() where T : SettingsAsset
         {
             var settingsType = typeof(T);
             T asset;
