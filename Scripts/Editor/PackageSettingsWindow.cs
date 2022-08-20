@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using RequestForMirror.Utils;
 using UnityEditor;
 using UnityEngine;
 
@@ -34,7 +35,7 @@ namespace RequestForMirror.Editor
 
         protected static void ShowWindow()
         {
-            Settings = EditorUtils.LoadSettings<TSettings>();
+            Settings = SettingsUtility.Load<TSettings>();
             var window = GetWindow(TraceCallingType(), false, Settings.GetEditorWindowTitle());
             window.minSize = new Vector2(420, 300);
         }
@@ -46,7 +47,7 @@ namespace RequestForMirror.Editor
         private void CreateCachedSettingsEditor()
         {
             if (Settings != null && _settingsEditor != null) return;
-            Settings = EditorUtils.LoadSettings<TSettings>();
+            Settings = SettingsUtility.Load<TSettings>();
             _settingsEditor = UnityEditor.Editor.CreateEditor(Settings);
         }
 

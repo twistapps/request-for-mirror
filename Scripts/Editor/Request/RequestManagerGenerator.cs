@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using RequestForMirror.Utils;
 using UnityEditor.Callbacks;
 #if MODULA
 using Modula;
@@ -17,7 +18,7 @@ namespace RequestForMirror.Editor.CodeGen
         [DidReloadScripts(2)]
         private static void OnScriptsReloadedOrChanged()
         {
-            _settings = EditorUtils.LoadSettings<CodeGenSettings>();
+            _settings = SettingsUtility.Load<CodeGenSettings>();
             if (_settings.autoGenerateOnCompile)
 #if MODULA
                 GenerateScripts();

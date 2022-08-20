@@ -1,5 +1,6 @@
 ﻿using System;
 using RequestForMirror.Editor.CodeGen;
+using RequestForMirror.Utils;
 using UnityEditor.Callbacks;
 
 namespace RequestForMirror.Editor.Request
@@ -14,8 +15,8 @@ namespace RequestForMirror.Editor.Request
 
         private static void OnBeforeCsFileGeneration(CodeGenTemplateBuilder builder, Type type)
         {
-            if (EditorUtils.LoadSettings<RequestSettings>().serializationMethod !=
-                RequestSerializerType.JsonUtility) return;
+            var settings = SettingsUtility.Load<RequestSettings>();
+            if (settings.serializationMethod != RequestSerializerType.JsonUtility) return;
 
             for (var i = 0; i < 4; i++)
             {

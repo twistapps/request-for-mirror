@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using RequestForMirror.Utils;
 using UnityEngine;
 
 namespace RequestForMirror.Editor.CodeGen
@@ -39,7 +40,7 @@ namespace RequestForMirror.Editor.CodeGen
             {
                 var genericArgument = genericArguments[i];
                 var variableName = (prefix + GenericArgumentSlug + (i + 1)).Replace("_1", "");
-                if (EditorUtils.LoadSettings<CodeGenSettings>().debugMode)
+                if (SettingsUtility.Load<CodeGenSettings>().debugMode)
                     Debug.Log($"Setting builder variable: ${variableName}$");
                 SetVariable(variableName, genericArgument.Name);
             }

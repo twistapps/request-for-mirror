@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using RequestForMirror.Utils;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
@@ -61,7 +62,7 @@ namespace RequestForMirror.Editor.CodeGen
 
         private static CodeGenSettings LoadSettingsAsset()
         {
-            _settings = EditorUtils.LoadSettings<CodeGenSettings>();
+            _settings = SettingsUtility.Load<CodeGenSettings>();
             return _settings;
         }
 

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using RequestForMirror.Utils;
 using UnityEditor;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace RequestForMirror.Editor.CodeGen
             string[] movedFromAssetPaths)
         {
             if (deletedAssets.Length < 1) return;
-            var settings = EditorUtils.LoadSettings<CodeGenSettings>();
+            var settings = SettingsUtility.Load<CodeGenSettings>();
             var generatedFileNames = settings.generatedFiles.Select(Path.GetFileName).ToArray();
 
             foreach (var deletedAsset in deletedAssets)
