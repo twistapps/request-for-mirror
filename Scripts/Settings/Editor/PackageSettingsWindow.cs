@@ -68,14 +68,18 @@ namespace RequestForMirror.Editor
             EditorGUILayout.EndVertical();
         }
 
-        protected void Checkbox(string text, ref bool value)
+        protected void Checkbox(string text, ref bool value, Action<bool> onValueChanged=null)
         {
+            var oldValue = value;
             value = EditorGUILayout.Toggle(text, value);
+            if (oldValue != value) onValueChanged?.Invoke(value);
         }
 
-        protected Enum EnumPopup(string text, Enum value)
+        protected void EnumPopup<T>(string text, ref T value, Action<T> onValueChanged=null) where T : Enum
         {
-            return EditorGUILayout.EnumPopup(label: text, selected: value);
+            var oldValue = value;
+            value = (T)EditorGUILayout.EnumPopup(label: text, selected: value);
+            if (!Equals(oldValue, value)) onValueChanged?.Invoke(value);
         }
 
         protected void InputField(string text, ref string value)
