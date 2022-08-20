@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Debug = UnityEngine.Debug;
 
 namespace RequestForMirror.Editor
@@ -70,6 +71,11 @@ namespace RequestForMirror.Editor
         protected void Checkbox(string text, ref bool value)
         {
             value = EditorGUILayout.Toggle(text, value);
+        }
+
+        protected Enum EnumPopup(string text, Enum value)
+        {
+            return EditorGUILayout.EnumPopup(label: text, selected: value);
         }
 
         protected void InputField(string text, ref string value)
