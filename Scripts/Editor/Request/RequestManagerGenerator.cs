@@ -14,8 +14,8 @@ namespace RequestForMirror.Editor.CodeGen
 
         private static CodeGenSettings _settings;
 
-        [DidReloadScripts]
-        private static void OnScriptsReloaded()
+        [DidReloadScripts(callbackOrder:2)]
+        private static void OnScriptsReloadedOrChanged()
         {
             _settings = EditorUtils.LoadSettings<CodeGenSettings>();
             if (_settings.autoGenerateOnCompile)
@@ -32,7 +32,7 @@ namespace RequestForMirror.Editor.CodeGen
             var outputPaths = new[]
             {
                 Path.ChangeExtension(requestManagerPath, ".cs"),
-                Path.ChangeExtension(requestManagerPath, ".meta")
+                Path.ChangeExtension(requestManagerPath, ".cs.meta")
             };
 
             foreach (var path in outputPaths)
@@ -59,19 +59,21 @@ namespace RequestForMirror.Editor.CodeGen
                 "public override TypedList<IModule> AvailableModules { get; } = new TypedList<IModule>()");
             foreach (var type in types) builder.AppendLine(".Add<$>()", type.Name);
             builder.Append(";");
+            
+            builder.AppendLine("#region Singleton");
+            AddSingleton(builder);
+            builder.AppendLine("#endregion");
 
             builder.EmptyLines(1);
             foreach (var type in types)
             {
                 var name = type.Name;
-                builder.AppendLine("public static $ $ => $.GetModule<$>();", name, name, SingletonInstanceName, name);
+                builder.AppendLine($"public static {name} {name} => {SingletonInstanceName}.GetModule<{name}>();");
             }
-
-            AddSingleton(builder);
             builder.Endfile();
 
-            var scriptFolder = CodeGen.GeneratedFolder;
-            var outputPath = Path.ChangeExtension(Path.Combine(scriptFolder, RequestManagerClassname), ".cs");
+            var generatedFolder = CodeGen.GeneratedFolder;
+            var outputPath = Path.ChangeExtension(Path.Combine(generatedFolder, "Modula", RequestManagerClassname), ".cs");
 
             builder.SaveToCsFile(outputPath);
         }
