@@ -81,6 +81,12 @@ namespace RequestForMirror.Editor
             GUILayout.Space(5);
         }
 
+        protected void InputField(string text)
+        {
+            var empty = "";
+            InputField(text, ref empty);
+        }
+
         private const int HorizontalButtonsMargin = 10;
 
         protected void HorizontalButtons(params Button[] buttons)
@@ -144,7 +150,7 @@ namespace RequestForMirror.Editor
         private readonly string _innerText;
         private readonly Action _onClick;
 
-        public Button(string innerText, Action onClick)
+        public Button(string innerText, Action onClick=null)
         {
             _innerText = innerText;
             _onClick = onClick;
@@ -154,7 +160,7 @@ namespace RequestForMirror.Editor
         {
             if (GUILayout.Button(_innerText, new GUIStyle("ToolbarButton"), GUILayout.Width(120)))
             {
-                _onClick.Invoke();
+                _onClick?.Invoke();
             }
         }
     }
