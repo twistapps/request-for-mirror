@@ -1,23 +1,28 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
-using Debug = UnityEngine.Debug;
 
 namespace RequestForMirror.Editor
 {
     public abstract class PackageSettingsWindow<TSettings> : EditorWindow where TSettings : SettingsAsset
     {
+        private const int HorizontalButtonsMargin = 10;
         protected static TSettings Settings;
+
+        private float _memorizedLabelWidth = -1;
         private UnityEditor.Editor _settingsEditor;
+
+        protected virtual void OnGUI()
+        {
+            CreateCachedSettingsEditor();
+        }
 
         private static Type TraceCallingType()
         {
             var stackTrace = new StackTrace();
             var thisType = stackTrace.GetFrame(0).GetMethod().DeclaringType;
-            
+
             for (var i = 1; i < stackTrace.FrameCount; i++)
             {
                 var declaringType = stackTrace.GetFrame(i).GetMethod().DeclaringType;
@@ -26,17 +31,17 @@ namespace RequestForMirror.Editor
 
             return thisType;
         }
-        
+
         protected static void ShowWindow()
         {
             Settings = EditorUtils.LoadSettings<TSettings>();
             var window = GetWindow(TraceCallingType(), false, Settings.GetEditorWindowTitle());
             window.minSize = new Vector2(420, 300);
         }
-        
+
         /// <summary>
-        /// Creates Editor for Settings ScriptableObject
-        /// so changes are saved to asset file as soon as they made.
+        ///     Creates Editor for Settings ScriptableObject
+        ///     so changes are saved to asset file as soon as they are made.
         /// </summary>
         private void CreateCachedSettingsEditor()
         {
@@ -45,12 +50,7 @@ namespace RequestForMirror.Editor
             _settingsEditor = UnityEditor.Editor.CreateEditor(Settings);
         }
 
-        protected virtual void OnGUI()
-        {
-            CreateCachedSettingsEditor();
-        }
-
-        protected void BeginSection(string heading, bool addDivider=false)
+        protected void BeginSection(string heading, bool addDivider = false)
         {
             EditorGUILayout.BeginVertical(new GUIStyle("ObjectPickerBackground"));
             if (addDivider) EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
@@ -58,7 +58,7 @@ namespace RequestForMirror.Editor
             EditorGUI.indentLevel++;
             ChangeLabelWidth(250);
         }
-        
+
         protected void EndSection()
         {
             RestoreLabelWidth();
@@ -68,17 +68,17 @@ namespace RequestForMirror.Editor
             EditorGUILayout.EndVertical();
         }
 
-        protected void Checkbox(string text, ref bool value, Action<bool> onValueChanged=null)
+        protected void Checkbox(string text, ref bool value, Action<bool> onValueChanged = null)
         {
             var oldValue = value;
             value = EditorGUILayout.Toggle(text, value);
             if (oldValue != value) onValueChanged?.Invoke(value);
         }
 
-        protected void EnumPopup<T>(string text, ref T value, Action<T> onValueChanged=null) where T : Enum
+        protected void EnumPopup<T>(string text, ref T value, Action<T> onValueChanged = null) where T : Enum
         {
             var oldValue = value;
-            value = (T)EditorGUILayout.EnumPopup(label: text, selected: value);
+            value = (T)EditorGUILayout.EnumPopup(text, value);
             if (!Equals(oldValue, value)) onValueChanged?.Invoke(value);
         }
 
@@ -97,8 +97,6 @@ namespace RequestForMirror.Editor
             InputField(text, ref empty);
         }
 
-        private const int HorizontalButtonsMargin = 10;
-
         protected void HorizontalButtons(params Button[] buttons)
         {
             GUILayout.Space(HorizontalButtonsMargin);
@@ -111,6 +109,7 @@ namespace RequestForMirror.Editor
                     button.Construct();
                     GUILayout.Space(5);
                 }
+
                 GUILayout.FlexibleSpace();
             }
             //GUILayout.Space(HorizontalButtonsMargin);
@@ -124,7 +123,7 @@ namespace RequestForMirror.Editor
             EditorGUI.indentLevel -= 2;
             EditorGUILayout.LabelField(heading, new GUIStyle("PR Label"));
             EditorGUI.indentLevel += 2;
-            
+
             GUILayout.Space(-HorizontalButtonsMargin);
             GUILayout.Space(5);
             HorizontalButtons(buttons);
@@ -135,9 +134,7 @@ namespace RequestForMirror.Editor
             EditorGUILayout.EndVertical();
             GUILayout.Space(-25);
         }
-        
-        private float _memorizedLabelWidth = -1;
-        
+
         private void ChangeLabelWidth(float newWidth)
         {
             // ReSharper disable once CompareOfFloatsByEqualityOperator
@@ -160,7 +157,7 @@ namespace RequestForMirror.Editor
         private readonly string _innerText;
         private readonly Action _onClick;
 
-        public Button(string innerText, Action onClick=null)
+        public Button(string innerText, Action onClick = null)
         {
             _innerText = innerText;
             _onClick = onClick;
@@ -168,10 +165,7 @@ namespace RequestForMirror.Editor
 
         public void Construct()
         {
-            if (GUILayout.Button(_innerText, new GUIStyle("ToolbarButton"), GUILayout.Width(120)))
-            {
-                _onClick?.Invoke();
-            }
+            if (GUILayout.Button(_innerText, new GUIStyle("ToolbarButton"), GUILayout.Width(120))) _onClick?.Invoke();
         }
     }
 }

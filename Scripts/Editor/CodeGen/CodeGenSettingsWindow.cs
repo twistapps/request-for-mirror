@@ -1,5 +1,4 @@
 ﻿using UnityEditor;
-using UnityEngine;
 
 namespace RequestForMirror.Editor.CodeGen
 {
@@ -8,16 +7,16 @@ namespace RequestForMirror.Editor.CodeGen
         protected override void OnGUI()
         {
             base.OnGUI();
-            
+
             BeginSection("CodeGen Settings");
             Checkbox("Auto Generate Scripts On Compile", ref Settings.autoGenerateOnCompile);
             Checkbox("Debug Mode", ref Settings.debugMode);
             EndSection();
-            
+
             CallToAction(
-                $"Generate all files marked with {nameof(IMarkedForCodeGen)}:", 
+                $"Generate all files marked with {nameof(IMarkedForCodeGen)}:",
                 new Button("Generate CS", () => CodeGen.GenerateScripts(true)));
-            
+
             BeginSection("Create codegen-supported script:", true);
             InputField("Classname");
             InputField("SomeOtherField");

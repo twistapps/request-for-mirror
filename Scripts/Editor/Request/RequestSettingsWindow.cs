@@ -1,24 +1,18 @@
 ﻿using UnityEditor;
-using UnityEngine;
 
 namespace RequestForMirror.Editor.Request
 {
     public class RequestPackageSettingsWindow : PackageSettingsWindow<RequestSettings>
     {
-        [MenuItem("Tools/Twist Apps/Request for Mirror Settings")]
-        private static void OnMenuItemClick()
-        {
-            ShowWindow();
-        }
-
         protected override void OnGUI()
         {
             base.OnGUI();
-            
+
             BeginSection("General");
-            Settings.serializationMethod = (RequestSerializerType)EnumPopup("Serialization Method", Settings.serializationMethod);
+            EnumPopup("Serialization Method", ref Settings.serializationMethod,
+                newValue => { CodeGen.CodeGen.GenerateScripts(true); });
             EndSection();
-            
+
             // CallToAction($"Generate all files marked with {nameof(IMarkedForCodeGen)}:", 
             //     new Button("Generate CS", () => { Debug.Log("Button Click"); }));
             //
@@ -28,6 +22,12 @@ namespace RequestForMirror.Editor.Request
             // HorizontalButtons(new Button("Create", () => { Debug.Log("Button Click"); }),
             //     new Button("Create", () => { Debug.Log("Button Click"); }));
             // EndSection();
+        }
+
+        [MenuItem("Tools/Twist Apps/Request for Mirror Settings")]
+        private static void OnMenuItemClick()
+        {
+            ShowWindow();
         }
     }
 }

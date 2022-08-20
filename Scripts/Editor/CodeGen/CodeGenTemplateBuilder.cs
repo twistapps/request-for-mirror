@@ -7,10 +7,9 @@ namespace RequestForMirror.Editor.CodeGen
 {
     public class CodeGenTemplateBuilder : CodeGenBuilder
     {
-        private readonly Dictionary<string, string> _valuesToReplace = new Dictionary<string, string>();
-
         public const string BaseSlug = "BASE_";
         public const string GenericArgumentSlug = "GENERIC_ARGUMENT_";
+        private readonly Dictionary<string, string> _valuesToReplace = new Dictionary<string, string>();
 
         //todo: move so called 'cursor' to position of a variable and ability to perform standard Builder's actions from that position,
         // then reset cursor
@@ -28,25 +27,20 @@ namespace RequestForMirror.Editor.CodeGen
         {
             SetVariable("CLASSNAME", type.Name);
             FindAndSetGenericArguments(type);
-            if (type.BaseType != null)
-            {
-                FindAndSetGenericArguments(type.BaseType, BaseSlug);
-            }
+            if (type.BaseType != null) FindAndSetGenericArguments(type.BaseType, BaseSlug);
         }
-        
+
         private void FindAndSetGenericArguments(Type type, string prefix = "")
         {
             //default variables
             var genericArguments = type.GetGenericArguments();
-            
+
             for (var i = 0; i < genericArguments.Length; i++)
             {
                 var genericArgument = genericArguments[i];
                 var variableName = (prefix + GenericArgumentSlug + (i + 1)).Replace("_1", "");
                 if (EditorUtils.LoadSettings<CodeGenSettings>().debugMode)
-                {
                     Debug.Log($"Setting builder variable: ${variableName}$");
-                }
                 SetVariable(variableName, genericArgument.Name);
             }
         }
@@ -62,11 +56,13 @@ namespace RequestForMirror.Editor.CodeGen
                 {
                     if (!_valuesToReplace.ContainsKey(parts[i]))
                     {
-                        Debug.LogWarning($"CodeGen: variable ${parts[i]}$ is not set for template {Path.GetFileName(templatePath)}. " +
-                                         "It will be replaced with empty string");
+                        Debug.LogWarning(
+                            $"CodeGen: variable ${parts[i]}$ is not set for template {Path.GetFileName(templatePath)}. " +
+                            "It will be replaced with empty string");
                         parts[i] = string.Empty;
                         continue;
                     }
+
                     parts[i] = _valuesToReplace[parts[i]];
                 }
 

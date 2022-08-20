@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 
 //[CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/SpawnManagerScriptableObject", order = 1)]
 namespace RequestForMirror
@@ -9,7 +8,7 @@ namespace RequestForMirror
         public bool autoGenerateOnCompile = true;
         public bool debugMode;
         public List<string> generatedFiles = new List<string>();
-        
+
         public override string GetEditorWindowTitle()
         {
             return "CodeGen Settings";

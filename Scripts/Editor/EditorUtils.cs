@@ -5,17 +5,17 @@ using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
-using Object = System.Object;
 
 namespace RequestForMirror.Editor
 {
-    public class EditorUtils
+    public static class EditorUtils
     {
-        private static string TwistappsFolder => Path.Combine("Assets", "TwistApps");
-        
         //cache results of GetDerivedFrom() because it's a pretty expensive method
         private static readonly Dictionary<Type, Type[]> DerivativesDictionary = new Dictionary<Type, Type[]>();
+
+        private static readonly Dictionary<Type, object> SettingsAssets = new Dictionary<Type, object>();
+        private static string TwistappsFolder => Path.Combine("Assets", "TwistApps");
+
         public static Type[] GetDerivedFrom<T>(params Type[] ignored)
         {
             var stopwatch = new Stopwatch();
@@ -42,12 +42,11 @@ namespace RequestForMirror.Editor
                 foundArr = foundArr.Where(t => !ignored.Contains(t)).ToArray();
 
             stopwatch.Stop();
-            if (stopwatch.ElapsedMilliseconds > 0)
-                Debug.Log($"GetDerivedFrom<{typeof(T).Name}>() took {stopwatch.ElapsedMilliseconds}ms to execute");
+            // if (stopwatch.ElapsedMilliseconds > 0)
+            //     Debug.Log($"GetDerivedFrom<{typeof(T).Name}>() took {stopwatch.ElapsedMilliseconds}ms to execute");
             return foundArr;
         }
 
-        private static readonly Dictionary<Type, Object> SettingsAssets = new Dictionary<Type, Object>();
         public static T LoadSettings<T>() where T : SettingsAsset
         {
             var settingsType = typeof(T);
@@ -55,9 +54,9 @@ namespace RequestForMirror.Editor
             if (SettingsAssets.ContainsKey(settingsType))
             {
                 asset = (T)SettingsAssets[settingsType];
-                if (asset != null) 
+                if (asset != null)
                     return asset;
-                
+
                 SettingsAssets.Remove(settingsType);
             }
 
@@ -69,13 +68,13 @@ namespace RequestForMirror.Editor
                 SettingsAssets.Add(settingsType, settings);
                 return (T)settings;
             }
-            
+
             //if settings file not found at desired location
             asset = ScriptableObject.CreateInstance<T>();
             Directory.CreateDirectory(TwistappsFolder);
             AssetDatabase.CreateAsset(asset, settingsPath);
             AssetDatabase.SaveAssets();
-            
+
             SettingsAssets.Add(settingsType, settings);
             return (T)settings;
         }

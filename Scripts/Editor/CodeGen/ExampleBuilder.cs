@@ -7,8 +7,8 @@ namespace RequestForMirror.Editor.CodeGen
     /// </summary>
     public class ExampleBuilder : CodeGenBuilder
     {
-        private const string helloworld = "\"Hello World\"";
-        public readonly string ClassName = "HelloWorldApp";
+        private const string HelloWorld = "\"Hello World\"";
+        public const string ClassName = "HelloWorldApp";
 
         public void Build()
         {
@@ -21,7 +21,7 @@ namespace RequestForMirror.Editor.CodeGen
             Class(Scope.Public, ClassName, typeof(MonoBehaviour));
             AppendLine("public void Start()");
             OpenCurly();
-            AppendLine("Debug.Log($);", helloworld);
+            AppendLine("Debug.Log($);", HelloWorld);
 
             Endfile();
         }

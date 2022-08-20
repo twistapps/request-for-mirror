@@ -14,7 +14,7 @@ namespace RequestForMirror.Editor.CodeGen
 
         private static CodeGenSettings _settings;
 
-        [DidReloadScripts(callbackOrder:2)]
+        [DidReloadScripts(2)]
         private static void OnScriptsReloadedOrChanged()
         {
             _settings = EditorUtils.LoadSettings<CodeGenSettings>();
@@ -59,7 +59,7 @@ namespace RequestForMirror.Editor.CodeGen
                 "public override TypedList<IModule> AvailableModules { get; } = new TypedList<IModule>()");
             foreach (var type in types) builder.AppendLine(".Add<$>()", type.Name);
             builder.Append(";");
-            
+
             builder.AppendLine("#region Singleton");
             AddSingleton(builder);
             builder.AppendLine("#endregion");
@@ -70,10 +70,12 @@ namespace RequestForMirror.Editor.CodeGen
                 var name = type.Name;
                 builder.AppendLine($"public static {name} {name} => {SingletonInstanceName}.GetModule<{name}>();");
             }
+
             builder.Endfile();
 
             var generatedFolder = CodeGen.GeneratedFolder;
-            var outputPath = Path.ChangeExtension(Path.Combine(generatedFolder, "Modula", RequestManagerClassname), ".cs");
+            var outputPath =
+                Path.ChangeExtension(Path.Combine(generatedFolder, "Modula", RequestManagerClassname), ".cs");
 
             builder.SaveToCsFile(outputPath);
         }

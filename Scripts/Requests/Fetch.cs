@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Mirror;
+﻿using Mirror;
 using UnityEngine;
 
 namespace RequestForMirror
@@ -11,10 +9,8 @@ namespace RequestForMirror
     /// <typeparam name="TResponse">Type of data on response</typeparam>
     public abstract class Fetch<TResponse> : NetworkBehaviour, IMarkedForCodeGen
     {
-        public RequestStatus Ok => new RequestStatus(true);
-        public RequestStatus Error => new RequestStatus(false);
-
         public delegate void RequestFailEvent(string reason);
+
         public delegate void ResponseDelegate(TResponse res);
 
         protected RequestFailEvent OnError;
@@ -24,6 +20,8 @@ namespace RequestForMirror
 
         //server only
         protected NetworkConnectionToClient sender;
+        public RequestStatus Ok => new RequestStatus(true);
+        public RequestStatus Error => new RequestStatus(false);
 
         protected void SetupRequest(ResponseDelegate responseCallback, RequestFailEvent onError = null)
         {
@@ -69,9 +67,9 @@ namespace RequestForMirror
         }
 
         /// <summary>
-        /// Handle request on Server using Mirror's built-in serializer
+        ///     Handle request on Server using Mirror's built-in serializer
         /// </summary>
-        protected void HandleRequestOnServer(out RequestStatus status, out TResponse response, 
+        protected void HandleRequestOnServer(out RequestStatus status, out TResponse response,
             NetworkConnectionToClient sender = null)
         {
             res = new RequestResponse<TResponse>();
@@ -114,13 +112,13 @@ namespace RequestForMirror
 
     public class RequestStatus
     {
-        public string ErrorMessage;
         public readonly bool HasErrors;
+        public string ErrorMessage;
 
         public RequestStatus(bool ok, string errorMessage = null)
         {
             HasErrors = !ok;
-            this.ErrorMessage = errorMessage;
+            ErrorMessage = errorMessage;
         }
 
         //required by Mirror's serializer

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace RequestForMirror
+﻿namespace RequestForMirror
 {
     /// <summary>
     ///     Used as a mark for code generator.

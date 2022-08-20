@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using RequestForMirror.Utils;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
@@ -11,29 +10,28 @@ namespace RequestForMirror.Editor.CodeGen
 {
     public static class CodeGen
     {
+        public delegate void BeforeCsFileGeneration(CodeGenTemplateBuilder builder, Type type);
+
         private const string PackageName = "com.twistapps.request-for-mirror";
         private const string DefaultTemplate = "CodeGenDefault";
         private const string SettingsFilename = "CodeGenSettings";
 
         private static CodeGenSettings _settings;
+        public static BeforeCsFileGeneration OnBeforeCsFileGeneration;
 
         private static string TwistappsFolder => Path.Combine("Assets", "TwistApps");
         public static string TemplatesFolder => Path.Combine("Packages", PackageName, "ScriptTemplates");
-        
+
         private static string CodeGenFolder => Path.Combine(TwistappsFolder, "CodeGen");
         private static string AssetFolder => Path.Combine(TwistappsFolder, "RequestForMirror");
-        
+
         public static string GeneratedFolder => Path.Combine(AssetFolder, "GeneratedScripts");
-
-
-        public delegate void BeforeCsFileGeneration(CodeGenTemplateBuilder builder, Type type);
-        public static BeforeCsFileGeneration OnBeforeCsFileGeneration;
 
         public static void RegisterPreprocessor(BeforeCsFileGeneration action)
         {
             OnBeforeCsFileGeneration += action;
         }
-        
+
         private static string GetTxtPath(params string[] pathParts)
         {
             return Path.ChangeExtension(Path.Combine(pathParts), ".txt");
@@ -53,8 +51,7 @@ namespace RequestForMirror.Editor.CodeGen
 
             if (hasGenericTypes && genericArgsAmount > 0 && File.Exists(genericSpecificTemplate))
                 return genericSpecificTemplate;
-            else
-                return basicTemplateForClass;
+            return basicTemplateForClass;
         }
 
         private static string GetOutputCsPath(Type type)
@@ -68,7 +65,7 @@ namespace RequestForMirror.Editor.CodeGen
             return _settings;
         }
 
-        [DidReloadScripts(callbackOrder: 1)]
+        [DidReloadScripts(1)]
         private static void OnScriptsReloaded()
         {
             if (LoadSettingsAsset().autoGenerateOnCompile)
@@ -76,7 +73,7 @@ namespace RequestForMirror.Editor.CodeGen
         }
 
         /// <summary>
-        /// Find types in assembly that should be complemented with generated code.
+        ///     Find types in assembly that should be complemented with generated code.
         /// </summary>
         /// <returns>Array of types derived from any abstract class implementing IMarkedForCodegen.</returns>
         public static IEnumerable<Type> GetTypes()
@@ -86,7 +83,7 @@ namespace RequestForMirror.Editor.CodeGen
                 .Where(type => !type.Name.Contains('`') && !type.IsAbstract);
         }
 
-        public static void AddPartialModifierToClassDefinition(string typeName)
+        private static void AddPartialModifierToClassDefinition(string typeName)
         {
             var guids = AssetDatabase.FindAssets(typeName);
             var scriptFilePaths = guids.Select(AssetDatabase.GUIDToAssetPath);
@@ -108,11 +105,10 @@ namespace RequestForMirror.Editor.CodeGen
                     break;
                 }
 
-                if (modified)
-                {
-                    File.WriteAllLines(path, lines);
-                    if (_settings.debugMode) Debug.Log($"Adding 'partial' modifier to {path}");
-                }
+                if (!modified) continue;
+                
+                File.WriteAllLines(path, lines);
+                if (_settings.debugMode) Debug.Log($"Adding 'partial' modifier to {path}");
             }
         }
 
@@ -126,8 +122,8 @@ namespace RequestForMirror.Editor.CodeGen
                 var outputPath = GetOutputCsPath(type);
 
                 var generatedFileIsRegistered = _settings.generatedFiles?.Contains(outputPath) ?? false;
-                if (!forceRegenerateExisting 
-                    && generatedFileIsRegistered 
+                if (!forceRegenerateExisting
+                    && generatedFileIsRegistered
                     && File.Exists(outputPath))
                 {
                     if (_settings.debugMode)
@@ -140,13 +136,13 @@ namespace RequestForMirror.Editor.CodeGen
                 OnBeforeCsFileGeneration?.Invoke(builder, type);
                 builder.GenerateFromTemplate(templatePath);
 
-                var autoRefresh = "kAutoRefresh";
+                const string autoRefresh = "kAutoRefresh";
                 var autoRefreshState = EditorPrefs.GetInt(autoRefresh);
                 EditorPrefs.SetInt(autoRefresh, 0);
                 builder.SaveToCsFile(outputPath);
                 AddPartialModifierToClassDefinition(type.Name);
                 EditorPrefs.SetInt(autoRefresh, autoRefreshState);
-                
+
                 if (!generatedFileIsRegistered)
                     _settings.generatedFiles!.Add(outputPath);
             }
@@ -167,14 +163,13 @@ namespace RequestForMirror.Editor.CodeGen
             {
                 var className = Path.GetFileNameWithoutExtension(file);
 
-                //if original class that was using IMarkedForCodeGen interface has been deleted,
-                //remove the auto-generated code too
-                if (!TypeIsMarkedWithInterface(className))
-                {
-                    File.Delete(file);
-                    if (_settings.generatedFiles.Contains(file))
-                        _settings.generatedFiles.RemoveAll(entry => entry == file);
-                }
+                // if original class that was using IMarkedForCodeGen interface has been deleted,
+                // remove the auto-generated code too
+                if (TypeIsMarkedWithInterface(className)) continue;
+                
+                File.Delete(file);
+                if (_settings.generatedFiles.Contains(file))
+                    _settings.generatedFiles.RemoveAll(entry => entry == file);
             }
         }
     }

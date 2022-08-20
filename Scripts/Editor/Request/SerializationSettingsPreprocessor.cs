@@ -1,7 +1,6 @@
 ﻿using System;
 using RequestForMirror.Editor.CodeGen;
 using UnityEditor.Callbacks;
-using UnityEngine;
 
 namespace RequestForMirror.Editor.Request
 {
@@ -17,10 +16,12 @@ namespace RequestForMirror.Editor.Request
         {
             if (EditorUtils.LoadSettings<RequestSettings>().serializationMethod !=
                 RequestSerializerType.JsonUtility) return;
-            
+
             for (var i = 0; i < 4; i++)
             {
-                var variableName = (CodeGenTemplateBuilder.BaseSlug + CodeGenTemplateBuilder.GenericArgumentSlug + (i + 1)).Replace("_1", "");
+                var variableName =
+                    (CodeGenTemplateBuilder.BaseSlug + CodeGenTemplateBuilder.GenericArgumentSlug + (i + 1)).Replace(
+                        "_1", "");
                 builder.SetVariable(variableName, "string");
             }
         }
