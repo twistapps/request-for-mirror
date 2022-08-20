@@ -1,10 +1,12 @@
-﻿using RequestForMirror;
+﻿using System;
+using System.Collections.Generic;
 
-/// <summary>
-///     Used as a mark for code generator.
-/// </summary>
-public interface IMarkedForCodeGen
+namespace RequestForMirror
 {
-    RequestStatus Ok { get; }
-    RequestStatus Error { get; }
+    /// <summary>
+    ///     Used as a mark for code generator.
+    /// </summary>
+    public interface IMarkedForCodeGen
+    {
+    }
 }
