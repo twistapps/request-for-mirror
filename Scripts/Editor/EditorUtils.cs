@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+//using UnityEditor;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace RequestForMirror.Editor
 {
@@ -12,10 +14,10 @@ namespace RequestForMirror.Editor
     {
         //cache results of GetDerivedFrom() because it's a pretty expensive method
         private static readonly Dictionary<Type, Type[]> DerivativesDictionary = new Dictionary<Type, Type[]>();
-
-        private static readonly Dictionary<Type, object> SettingsAssets = new Dictionary<Type, object>();
-        private static string TwistappsFolder => Path.Combine("Assets", "TwistApps");
-
+        
+        private static readonly Dictionary<Type, SettingsAsset> SettingsAssets = new Dictionary<Type, SettingsAsset>();
+        private static string TwistappsFolder => Path.Combine("Assets", "TwistApps", "Resources", "Settings");
+        
         public static Type[] GetDerivedFrom<T>(params Type[] ignored)
         {
             var stopwatch = new Stopwatch();
@@ -46,8 +48,8 @@ namespace RequestForMirror.Editor
             //     Debug.Log($"GetDerivedFrom<{typeof(T).Name}>() took {stopwatch.ElapsedMilliseconds}ms to execute");
             return foundArr;
         }
-
-        public static T LoadSettings<T>() where T : SettingsAsset
+        
+        public static T Load<T>() where T : SettingsAsset
         {
             var settingsType = typeof(T);
             T asset;
@@ -59,24 +61,30 @@ namespace RequestForMirror.Editor
 
                 SettingsAssets.Remove(settingsType);
             }
-
-            var settingsPath = Path.Combine(TwistappsFolder, settingsType.Name) + ".asset";
-            var settings = AssetDatabase.LoadAssetAtPath(settingsPath, settingsType);
-
-            if ((T)settings != null)
+            
+            asset = Resources.Load<T>(Path.Combine("Settings", settingsType.Name));
+            if (asset != null)
             {
-                SettingsAssets.Add(settingsType, settings);
-                return (T)settings;
+                SettingsAssets.Add(settingsType, asset);
+                return asset;
             }
-
+            
+#if UNITY_EDITOR
+            
             //if settings file not found at desired location
+            var settingsPath = Path.Combine(TwistappsFolder, settingsType.Name) + ".asset";
             asset = ScriptableObject.CreateInstance<T>();
             Directory.CreateDirectory(TwistappsFolder);
             AssetDatabase.CreateAsset(asset, settingsPath);
             AssetDatabase.SaveAssets();
 
-            SettingsAssets.Add(settingsType, settings);
-            return (T)settings;
+            SettingsAssets.Add(settingsType, asset);
+            return asset;
+            
+#else
+            Debug.LogError($"Settings file {typeof(T).Name} not found in Resources!");
+            return null;
+#endif
         }
     }
 }
