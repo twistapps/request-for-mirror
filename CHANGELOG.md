@@ -1,3 +1,27 @@
+# [0.8.0](https://github.com/twistapps/request-for-mirror/compare/0.7.1...0.8.0) (2022-08-20)
+
+
+### Bug Fixes
+
+* _settings being null sometimes ([e5a5f12](https://github.com/twistapps/request-for-mirror/commit/e5a5f129b3a5118520f8c0e5b3224439492624f5))
+* cache settings ([3c890c6](https://github.com/twistapps/request-for-mirror/commit/3c890c66fa8f7e576b6b25c7d85c7fa98a8b1c47))
+* loading settings asset using generic method ([8848eee](https://github.com/twistapps/request-for-mirror/commit/8848eeecc5ab44039836c90351c0ce6110267125))
+* settings window name ([359615e](https://github.com/twistapps/request-for-mirror/commit/359615ea9fb78fef524b3d3acdc74eb4861863f9))
+* specify that LoadSettings works with child of SettingsAsset only ([639bed0](https://github.com/twistapps/request-for-mirror/commit/639bed0dd678dc2e1e5b3fb596c99888cdf08168))
+
+
+### Features
+
+* choose serializer in settings, fulfill [#3](https://github.com/twistapps/request-for-mirror/issues/3) ([2b30800](https://github.com/twistapps/request-for-mirror/commit/2b30800897af9684059848a2d0d08a5a7086b098))
+* create dummy buttons with no action ([4cd40a0](https://github.com/twistapps/request-for-mirror/commit/4cd40a048d6e645449af94f2fb984fb8ae62fe26))
+* EnumPopup support ([a804d09](https://github.com/twistapps/request-for-mirror/commit/a804d09114325e53c30ed3caf24908696ad0bd1c))
+* framework for making unified settings windows ([9bc137a](https://github.com/twistapps/request-for-mirror/commit/9bc137a381f1648b897b2d2d731bda1da36134a1))
+* generic settings loader ([7c64c72](https://github.com/twistapps/request-for-mirror/commit/7c64c72afd861bdfdabd29ada063d4be13b17930))
+* more default variables in template builder ([1d5c851](https://github.com/twistapps/request-for-mirror/commit/1d5c851f6bb575a21133bb50db7693eb146367cc))
+* Ok and Error properties: resolve [#8](https://github.com/twistapps/request-for-mirror/issues/8) ([30d53aa](https://github.com/twistapps/request-for-mirror/commit/30d53aaa4986777d6e7f1734cc731b32f0e87426))
+* rewrite CodeGenWindow to use PackageSettingsWindow ([8d233e1](https://github.com/twistapps/request-for-mirror/commit/8d233e1ac52866eb179347f565dcd6edda4b7bde))
+* warn if a variable is not set for template ([a1bf697](https://github.com/twistapps/request-for-mirror/commit/a1bf69734da2ffeb091df9adc7dbba72a00fd185))
+
 ## [0.7.1](https://github.com/twistapps/request-for-mirror/compare/0.7.0...0.7.1) (2022-08-18)
 
 
