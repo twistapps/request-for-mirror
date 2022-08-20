@@ -1,3 +1,19 @@
+# [0.9.0](https://github.com/twistapps/request-for-mirror/compare/0.8.0...0.9.0) (2022-08-20)
+
+
+### Bug Fixes
+
+* add missing meta files ([f246002](https://github.com/twistapps/request-for-mirror/commit/f2460029d7a62e811ab69c1c68bd593564794c96))
+* optimizations ([58a369c](https://github.com/twistapps/request-for-mirror/commit/58a369c68af71e4c060a7709b6f4b91c8ea7818b))
+* remove unnecessary props from interface ([a2feb22](https://github.com/twistapps/request-for-mirror/commit/a2feb22c0d6c06e9c31e8b6ed604dbffe4e60cfb))
+* use the right symbol in conditional compillation ([1c88496](https://github.com/twistapps/request-for-mirror/commit/1c88496d8435369ab19b24a42ddcb0a0a75c5872))
+
+
+### Features
+
+* add define symbols on first run ([a427b64](https://github.com/twistapps/request-for-mirror/commit/a427b645be994173295a803cb79e4638ec2b6d63))
+* improvements of EnumPopup and Checkbox (closes [#9](https://github.com/twistapps/request-for-mirror/issues/9)) ([6fcfb00](https://github.com/twistapps/request-for-mirror/commit/6fcfb005e00070a3048f8399f54690a04bae244e))
+
 # [0.8.0](https://github.com/twistapps/request-for-mirror/compare/0.7.1...0.8.0) (2022-08-20)
 
 
