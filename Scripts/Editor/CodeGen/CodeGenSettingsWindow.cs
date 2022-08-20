@@ -14,7 +14,7 @@ namespace RequestForMirror.Editor.CodeGen
         {
             CreateCachedSettingsEditor();
             EditorGUILayout.BeginVertical(new GUIStyle("ObjectPickerBackground"));
-            EditorGUILayout.LabelField("CodeGen settings", new GUIStyle("BoldLabel"));
+            EditorGUILayout.LabelField("CodeGen Settings", new GUIStyle("BoldLabel"));
 
             ChangeLabelWidth(250);
             EditorGUI.indentLevel++;
