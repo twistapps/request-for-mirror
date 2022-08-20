@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -7,6 +8,9 @@ namespace RequestForMirror.Editor.CodeGen
     public class CodeGenTemplateBuilder : CodeGenBuilder
     {
         private readonly Dictionary<string, string> _valuesToReplace = new Dictionary<string, string>();
+
+        public const string BaseSlug = "BASE_";
+        public const string GenericArgumentSlug = "GENERIC_ARGUMENT_";
 
         //todo: move so called 'cursor' to position of a variable and ability to perform standard Builder's actions from that position,
         // then reset cursor
@@ -18,6 +22,33 @@ namespace RequestForMirror.Editor.CodeGen
                 _valuesToReplace[key] = replacementValue;
             else
                 _valuesToReplace.Add(key, replacementValue);
+        }
+
+        public void SetVariablesForType(Type type)
+        {
+            SetVariable("CLASSNAME", type.Name);
+            FindAndSetGenericArguments(type);
+            if (type.BaseType != null)
+            {
+                FindAndSetGenericArguments(type.BaseType, BaseSlug);
+            }
+        }
+        
+        private void FindAndSetGenericArguments(Type type, string prefix = "")
+        {
+            //default variables
+            var genericArguments = type.GetGenericArguments();
+            
+            for (var i = 0; i < genericArguments.Length; i++)
+            {
+                var genericArgument = genericArguments[i];
+                var variableName = (prefix + GenericArgumentSlug + (i + 1)).Replace("_1", "");
+                if (EditorUtils.LoadSettings<CodeGenSettings>().debugMode)
+                {
+                    Debug.Log($"Setting builder variable: ${variableName}$");
+                }
+                SetVariable(variableName, genericArgument.Name);
+            }
         }
 
         public void GenerateFromTemplate(string templatePath)
