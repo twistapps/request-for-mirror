@@ -25,6 +25,14 @@ namespace RequestForMirror.Editor.CodeGen
         
         public static string GeneratedFolder => Path.Combine(AssetFolder, "GeneratedScripts");
 
+
+        public delegate void BeforeCsFileGeneration(CodeGenTemplateBuilder builder, Type type);
+        public static BeforeCsFileGeneration OnBeforeCsFileGeneration;
+
+        public static void RegisterPreprocessor(BeforeCsFileGeneration action)
+        {
+            OnBeforeCsFileGeneration += action;
+        }
         
         private static string GetTxtPath(params string[] pathParts)
         {
@@ -60,7 +68,7 @@ namespace RequestForMirror.Editor.CodeGen
             return _settings;
         }
 
-        [DidReloadScripts]
+        [DidReloadScripts(callbackOrder: 1)]
         private static void OnScriptsReloaded()
         {
             if (LoadSettingsAsset().autoGenerateOnCompile)
@@ -129,6 +137,7 @@ namespace RequestForMirror.Editor.CodeGen
 
                 var templatePath = FindTxtTemplate(type);
                 builder.SetVariablesForType(type);
+                OnBeforeCsFileGeneration?.Invoke(builder, type);
                 builder.GenerateFromTemplate(templatePath);
 
                 var autoRefresh = "kAutoRefresh";
