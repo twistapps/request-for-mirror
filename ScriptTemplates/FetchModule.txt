@@ -17,8 +17,8 @@ public partial class $CLASSNAME$
     }
     
     [TargetRpc]
-    protected override void TargetReceiveResponse$SERIALIZER$(NetworkConnection target, Status status, $RESPONSE_TYPE$ response)
+    protected override void TargetReceiveResponse$SERIALIZER$(NetworkConnection target, int requestId, Status status, $RESPONSE_TYPE$ response)
     {
-        base.TargetReceiveResponse$SERIALIZER$(target, status, response);
+        base.TargetReceiveResponse$SERIALIZER$(target, requestId, status, response);
     }
 }

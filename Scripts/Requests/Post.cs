@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace RequestForMirror
 {
-    public abstract class Post<TReq, TRes> : Fetch<TRes>
+    public abstract class Post<TReq, TRes> : RequestBase<TRes>
     {
         // ReSharper disable once MemberCanBePrivate.Global
         protected TReq Request;
