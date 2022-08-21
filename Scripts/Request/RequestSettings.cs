@@ -12,7 +12,7 @@
 
         public override string GetEditorWindowTitle()
         {
-            return "Request for Mirror Settings";
+            return "Request for Mirror";
         }
     }
 }

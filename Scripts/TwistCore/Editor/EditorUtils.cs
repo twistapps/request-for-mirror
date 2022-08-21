@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using UnityEditor;
-//using UnityEditor;
-using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 namespace RequestForMirror.Editor
 {

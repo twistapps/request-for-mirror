@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using UnityEditor;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace RequestForMirror.Utils
 {
@@ -23,6 +26,8 @@ namespace RequestForMirror.Utils
                 SettingsAssets.Remove(settingsType);
             }
             
+            //var settingsPath = Path.Combine(TwistappsFolder, settingsType.Name) + ".asset";
+            //asset = (T)AssetDatabase.LoadAssetAtPath(settingsPath, settingsType);
             asset = Resources.Load<T>(Path.Combine("Settings", settingsType.Name));
             if (asset != null)
             {

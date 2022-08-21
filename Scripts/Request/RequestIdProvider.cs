@@ -27,7 +27,7 @@ namespace RequestForMirror
     {
         private static readonly Dictionary<int, RequestId> RequestIdsPerClient = new Dictionary<int, RequestId>();
 
-        public static RequestId LocalRequestId = 0;
+        public static readonly RequestId LocalRequestId = 0;
 
         static RequestIdProvider()
         {
