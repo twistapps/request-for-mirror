@@ -1,3 +1,19 @@
+# [0.11.0](https://github.com/twistapps/request-for-mirror/compare/0.10.0...0.11.0) (2022-08-21)
+
+
+### Bug Fixes
+
+* cleanup and made Variables public ([cd3136d](https://github.com/twistapps/request-for-mirror/commit/cd3136d16e63164ce429fc13a26941c8bd60c1b1))
+
+
+### Features
+
+* fetch and post full rewrite ([725290b](https://github.com/twistapps/request-for-mirror/commit/725290b465cb5de2d6bdd663cb731fba4f0ac87d))
+* id provider for requests ([#12](https://github.com/twistapps/request-for-mirror/issues/12)) ([5d1232c](https://github.com/twistapps/request-for-mirror/commit/5d1232ce19bbdcda7c7c8c0be669a322edaefca5))
+* new request base, uses IdProvider ([#12](https://github.com/twistapps/request-for-mirror/issues/12), 13) ([b15e338](https://github.com/twistapps/request-for-mirror/commit/b15e3382a9d29b8353343e92bb85f4f534f0122b))
+* set builder variables based on serialization ([89e22b9](https://github.com/twistapps/request-for-mirror/commit/89e22b9c073eab5d4de26d34d58ab554c6d374a4))
+* use reqs with new base (closes [#12](https://github.com/twistapps/request-for-mirror/issues/12), closes [#13](https://github.com/twistapps/request-for-mirror/issues/13)) ([e98ce05](https://github.com/twistapps/request-for-mirror/commit/e98ce050ed865c6d187fb6ad26971d8bf7630158))
+
 # [0.10.0](https://github.com/twistapps/request-for-mirror/compare/0.9.1...0.10.0) (2022-08-21)
 
 
