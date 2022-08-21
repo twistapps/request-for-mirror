@@ -1,3 +1,16 @@
+# [0.10.0](https://github.com/twistapps/request-for-mirror/compare/0.9.1...0.10.0) (2022-08-21)
+
+
+### Bug Fixes
+
+* add post`3 template ([56751b6](https://github.com/twistapps/request-for-mirror/commit/56751b60242b8a62bf80dd5eb255391333e9a701))
+* changes are being saved to asset file again (closes [#11](https://github.com/twistapps/request-for-mirror/issues/11)) ([95fa419](https://github.com/twistapps/request-for-mirror/commit/95fa419d0e16be3bd3bf48dac755d9921819b07b))
+
+
+### Features
+
+* settings support in build ([a3a609f](https://github.com/twistapps/request-for-mirror/commit/a3a609f81c51603cb0ac3daaae5ff35b930605af))
+
 ## [0.9.1](https://github.com/twistapps/request-for-mirror/compare/0.9.0...0.9.1) (2022-08-20)
 
 
