@@ -1,4 +1,5 @@
 ﻿using UnityEditor;
+using UnityEngine;
 
 namespace RequestForMirror.Editor.Request
 {
@@ -12,6 +13,9 @@ namespace RequestForMirror.Editor.Request
             EnumPopup("Serialization Method", ref Settings.serializationMethod,
                 newValue => { CodeGen.CodeGen.GenerateScripts(true); });
             EndSection();
+            
+            
+            WatchChangesAbove();
 
             // CallToAction($"Generate all files marked with {nameof(IMarkedForCodeGen)}:", 
             //     new Button("Generate CS", () => { Debug.Log("Button Click"); }));

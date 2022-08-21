@@ -12,11 +12,22 @@ namespace RequestForMirror.Editor
         protected static TSettings Settings;
 
         private float _memorizedLabelWidth = -1;
+        
+        //todo: research - do we need it after resolving #11?
         private UnityEditor.Editor _settingsEditor;
 
         protected virtual void OnGUI()
         {
             CreateCachedSettingsEditor();
+        }
+
+        /// <summary>
+        /// Update the actual asset file if any value above this has changed.
+        /// </summary>
+        protected void WatchChangesAbove()
+        {
+            if (GUI.changed)
+                EditorUtility.SetDirty(Settings);
         }
 
         private static Type TraceCallingType()

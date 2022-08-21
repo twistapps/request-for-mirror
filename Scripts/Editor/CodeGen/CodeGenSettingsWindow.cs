@@ -22,6 +22,9 @@ namespace RequestForMirror.Editor.CodeGen
             InputField("SomeOtherField");
             HorizontalButtons(new Button("Create"));
             EndSection();
+            
+            
+            WatchChangesAbove();
         }
 
         [MenuItem("Tools/Twist Apps/CodeGen Settings")]
