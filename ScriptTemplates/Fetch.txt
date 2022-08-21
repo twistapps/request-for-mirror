@@ -1,3 +1,5 @@
+// ReSharper disable CheckNamespace
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,15 +11,14 @@ using RequestForMirror;
 public partial class $CLASSNAME$
 {
     [Command]
-    protected override void CmdComputeResponse(NetworkConnectionToClient sender = null)
+    protected override void CmdHandleRequest(NetworkConnectionToClient sender = null)
     {
-        HandleRequestOnServer(out var status, out $BASE_GENERIC_ARGUMENT$ response, sender);
-        TargetReceivedResponse(connectionToClient, status, response);
+        base.CmdHandleRequest(sender);
     }
     
     [TargetRpc]
-    public void TargetReceivedResponse(NetworkConnection target, RequestStatus status, $BASE_GENERIC_ARGUMENT$ response)
+    protected override void TargetReceiveResponse$SERIALIZER$(NetworkConnection target, Status status, $RESPONSE_TYPE$ response)
     {
-        HandleResponseOnClient(status, response);
+        base.TargetReceiveResponse$SERIALIZER$(target, status, response);
     }
 }
