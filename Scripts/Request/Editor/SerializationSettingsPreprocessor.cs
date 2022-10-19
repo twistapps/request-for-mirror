@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using RequestForMirror.Editor.CodeGen;
 using RequestForMirror.Utils;
 using UnityEditor.Callbacks;
 using UnityEngine;
 
-namespace RequestForMirror.Editor.Request
+namespace RequestForMirror.Editor
 {
     [SuppressMessage("ReSharper", "ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator")]
     public static class SerializationSettingsPreprocessor
@@ -14,7 +13,7 @@ namespace RequestForMirror.Editor.Request
         [DidReloadScripts]
         private static void OnScriptsReload()
         {
-            CodeGen.CodeGen.OnBeforeCsFileGeneration += OnBeforeCsFileGeneration;
+            CodeGen.OnBeforeCsFileGeneration += OnBeforeCsFileGeneration;
         }
 
         private static void SetGenericArgsToString(CodeGenTemplateBuilder builder)
