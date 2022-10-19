@@ -6,9 +6,16 @@
         MirrorBuiltIn
     }
 
+    public enum NetworkTransportMethod
+    {
+        NetworkMessages,
+        HighLevelCommands
+    }
+
     public class RequestSettings : SettingsAsset
     {
         public RequestSerializerType serializationMethod;
+        public NetworkTransportMethod transportMethod;
 
         public override string GetEditorWindowTitle()
         {
