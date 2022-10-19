@@ -14,16 +14,16 @@ namespace RequestForMirror
         // ReSharper disable once MemberCanBePrivate.Global
         protected NetworkConnectionToClient Sender; // server only
         private RequestId _requestId;               // server only
-        
-        public Status Ok => new Status(true);
-        public Status Error => new Status(false);
+
+        protected Status Ok => new Status(true);
+        protected Status Error => new Status(false);
 
         #region Client Actions
 
         public delegate void FailDelegate(string reason);
         public delegate void ResponseDelegate(TRes res);
-        
-        public class ResponseClientActions
+
+        private class ResponseClientActions
         {
             public readonly ResponseDelegate OnResponse;
             public readonly FailDelegate OnFail;
@@ -41,8 +41,10 @@ namespace RequestForMirror
         protected void InitSend(out RequestSerializerType usingSerializerType, ResponseDelegate responseCallback,
             FailDelegate failCallback = null)
         {
+            var requestId = RequestIdProvider.LocalId.Next();
+            Debug.Log($"RequestID::: {requestId.ID}");
             _awaitingResponses.Add(
-                RequestIdProvider.LocalRequestId.Next(), 
+                requestId, 
                 new ResponseClientActions(responseCallback, failCallback));
             
             var settings = SettingsUtility.Load<RequestSettings>();
@@ -71,7 +73,9 @@ namespace RequestForMirror
             
             if (serializerInUse == RequestSerializerType.JsonUtility)
             {
-                var json = JsonUtility.ToJson(Response.Payload);
+                Debug.Log($"Payload: {Response.Payload}");
+                var json = JsonUtility.ToJson(Response);
+                Debug.Log($"JSON: {json}");
                 TargetReceiveResponseJson(sender, _requestId.ID, status, json);
                 return;
             }
@@ -92,8 +96,8 @@ namespace RequestForMirror
             Status status,
             string response)
         {
-            var responseDeserialized = JsonUtility.FromJson<TRes>(response);
-            Response.SetPayload(responseDeserialized);
+            var responseDeserialized = JsonUtility.FromJson<Response<TRes>>(response);
+            Response.SetPayload(responseDeserialized.Payload);
             HandleResponse(id, status);
         }
 
@@ -111,11 +115,15 @@ namespace RequestForMirror
         }
 
         [Client]
-        private void HandleResponse(RequestId id, Status status)
+        private void HandleResponse(int id, Status status)
         {
+            foreach (var key in _awaitingResponses.Keys)
+            {
+                Debug.Log(key);
+            }
             if (!_awaitingResponses.ContainsKey(id))
             {
-                Debug.LogError($"{GetType().Name}: Request with id {id} not found. Callbacks won't trigger");
+                Debug.LogError($"{GetType().Name}: callback with id {id} not found. Callbacks won't trigger");
                 return;
             }
 
