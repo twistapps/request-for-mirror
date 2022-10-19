@@ -8,7 +8,7 @@ namespace RequestForMirror
         // ReSharper disable once MemberCanBePrivate.Global
         public int ID;
 
-        private RequestId(int id)
+        internal RequestId(int id)
         {
             ID = id;
         }
@@ -25,14 +25,20 @@ namespace RequestForMirror
     
     public static class RequestIdProvider
     {
-        private static readonly Dictionary<int, RequestId> RequestIdsPerClient = new Dictionary<int, RequestId>();
-
-        public static readonly RequestId LocalRequestId = 0;
+        private static readonly Dictionary<int, RequestId> RequestIdsPerClient = new Dictionary<int, RequestId>(); //ids stored on server
+        public static readonly RequestId LocalId = 0; //id stored in client
 
         static RequestIdProvider()
         {
             NetworkServer.OnConnectedEvent += OnConnectedEvent;
             NetworkServer.OnDisconnectedEvent += OnDisconnectedEvent;
+        }
+
+        public static void RegisterHostConnection()
+        {
+            const int hostConnectionId = 0;
+            if (!RequestIdsPerClient.ContainsKey(hostConnectionId))
+                RequestIdsPerClient.Add(hostConnectionId,0);
         }
 
         private static void OnConnectedEvent(NetworkConnectionToClient conn)
