@@ -11,40 +11,40 @@ namespace RequestForMirror.Utils
 {
     public static class SettingsUtility
     {
-        private static readonly Dictionary<Type, SettingsAsset> SettingsAssets = new Dictionary<Type, SettingsAsset>();
+        private static readonly Dictionary<Type, SettingsAsset> Settings = new Dictionary<Type, SettingsAsset>();
         private static string TwistappsFolder => Path.Combine("Assets", "TwistApps", "Resources", "Settings");
         public static T Load<T>() where T : SettingsAsset
         {
-            var settingsType = typeof(T);
+            var type = typeof(T);
             T asset;
-            if (SettingsAssets.ContainsKey(settingsType))
+            if (Settings.ContainsKey(type))
             {
-                asset = (T)SettingsAssets[settingsType];
+                asset = (T)Settings[type];
                 if (asset != null)
                     return asset;
 
-                SettingsAssets.Remove(settingsType);
+                Settings.Remove(type);
             }
             
             //var settingsPath = Path.Combine(TwistappsFolder, settingsType.Name) + ".asset";
             //asset = (T)AssetDatabase.LoadAssetAtPath(settingsPath, settingsType);
-            asset = Resources.Load<T>(Path.Combine("Settings", settingsType.Name));
+            asset = Resources.Load<T>(Path.Combine("Settings", type.Name));
             if (asset != null)
             {
-                SettingsAssets.Add(settingsType, asset);
+                Settings.Add(type, asset);
                 return asset;
             }
             
 #if UNITY_EDITOR
             
             //if settings file not found at desired location
-            var settingsPath = Path.Combine(TwistappsFolder, settingsType.Name) + ".asset";
             asset = ScriptableObject.CreateInstance<T>();
+            var assetPath = Path.Combine(TwistappsFolder, type.Name) + ".asset";
             Directory.CreateDirectory(TwistappsFolder);
-            AssetDatabase.CreateAsset(asset, settingsPath);
+            AssetDatabase.CreateAsset(asset, assetPath);
             AssetDatabase.SaveAssets();
 
-            SettingsAssets.Add(settingsType, asset);
+            Settings.Add(type, asset);
             return asset;
             
 #else

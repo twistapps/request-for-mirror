@@ -40,5 +40,10 @@ namespace RequestForMirror.Editor
             //     Debug.Log($"GetDerivedFrom<{typeof(T).Name}>() took {stopwatch.ElapsedMilliseconds}ms to execute");
             return foundArr;
         }
+
+        public static Type[] GetDerivedTypesExcludingSelf<T>(params Type[] ignored)
+        {
+            return GetDerivedFrom<T>(ignored.Append(typeof(T)).ToArray());
+        }
     }
 }
