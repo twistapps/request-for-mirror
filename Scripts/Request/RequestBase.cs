@@ -1,57 +1,38 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Mirror;
-using UnityEngine;
 using TwistCore;
 using TwistCore.CodeGen;
+using UnityEngine;
 
 namespace RequestForMirror
 {
-    public abstract class RequestBase<TRes> : NetworkBehaviour, IMarkedForCodeGen, IRequest 
+    public abstract class RequestBase<TRes> : NetworkBehaviour, IMarkedForCodeGen, IRequest
     {
+        private RequestId _requestId; // server only
+
         // ReSharper disable once MemberCanBePrivate.Global
         protected Response<TRes> Response;
-        
+
         // ReSharper disable once MemberCanBePrivate.Global
         protected NetworkConnectionToClient Sender; // server only
-        private RequestId _requestId;               // server only
 
         protected Status Ok => new Status(true);
         protected Status Error => new Status(false);
 
-        #region Client Actions
-
-        public delegate void FailDelegate(string reason);
-        public delegate void ResponseDelegate(TRes res);
-
-        private class ResponseClientActions
-        {
-            public readonly ResponseDelegate onResponse;
-            public readonly FailDelegate onFail;
-
-            public ResponseClientActions(ResponseDelegate onResponse, FailDelegate onFail)
-            {
-                this.onResponse = onResponse;
-                this.onFail = onFail;
-            }
-        }
-        // ReSharper disable once CollectionNeverQueried.Local
-        private readonly Dictionary<int, ResponseClientActions> _awaitingResponse = new Dictionary<int, ResponseClientActions>();
-        #endregion
-        
         protected void InitSend(out RequestSerializerType usingSerializerType, ResponseDelegate responseCallback,
             FailDelegate failCallback = null)
         {
             var requestId = RequestIdProvider.localId.Next();
             Debug.Log($"RequestID::: {requestId.ID}");
             _awaitingResponse.Add(
-                requestId.ID, 
+                requestId.ID,
                 new ResponseClientActions(responseCallback, failCallback));
-            
+
             var settings = SettingsUtility.Load<RequestSettings>();
             usingSerializerType = settings.serializationMethod;
         }
-        
+
         [Server]
         protected virtual void CmdHandleRequest(NetworkConnectionToClient sender = null)
         {
@@ -71,8 +52,8 @@ namespace RequestForMirror
         {
             var settings = SettingsUtility.Load<RequestSettings>();
             var serializerInUse = settings.serializationMethod;
-            
-            
+
+
             if (serializerInUse == RequestSerializerType.JsonUtility)
             {
                 Debug.Log($"Payload: {Response.Payload}");
@@ -88,12 +69,12 @@ namespace RequestForMirror
                 return;
             }
         }
-        
+
         [Client]
         // Deserialize using JsonUtility
         // ReSharper disable once UnusedParameter.Global
         protected virtual void TargetReceiveResponseJson(
-            NetworkConnection target, 
+            NetworkConnection target,
             int id,
             Status status,
             string response)
@@ -121,10 +102,7 @@ namespace RequestForMirror
         private void HandleResponse(int id, Status status)
         {
             Debug.Log("Awaiting response keys:");
-            foreach (var key in _awaitingResponse.Keys)
-            {
-                Debug.Log(key);
-            }
+            foreach (var key in _awaitingResponse.Keys) Debug.Log(key);
             if (!_awaitingResponse.ContainsKey(id))
             {
                 Debug.LogError($"{GetType().Name}: callback with id {id} not found. Callbacks won't trigger");
@@ -132,7 +110,7 @@ namespace RequestForMirror
             }
 
             var actions = _awaitingResponse[id];
-            
+
             if (!status.RequestFailed)
                 actions.onResponse?.Invoke(Response.Payload);
             else
@@ -140,11 +118,35 @@ namespace RequestForMirror
 
             _awaitingResponse.Remove(id);
         }
-        
-        
+
+
         protected abstract void OnRequest(out Status status);
+
+        #region Client Actions
+
+        public delegate void FailDelegate(string reason);
+
+        public delegate void ResponseDelegate(TRes res);
+
+        private class ResponseClientActions
+        {
+            public readonly FailDelegate onFail;
+            public readonly ResponseDelegate onResponse;
+
+            public ResponseClientActions(ResponseDelegate onResponse, FailDelegate onFail)
+            {
+                this.onResponse = onResponse;
+                this.onFail = onFail;
+            }
+        }
+
+        // ReSharper disable once CollectionNeverQueried.Local
+        private readonly Dictionary<int, ResponseClientActions> _awaitingResponse =
+            new Dictionary<int, ResponseClientActions>();
+
+        #endregion
     }
-    
+
     public class Response<TRes>
     {
         public TRes Payload;

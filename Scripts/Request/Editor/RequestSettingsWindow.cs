@@ -1,12 +1,8 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using TwistCore.CodeGen.Editor;
 using TwistCore.Editor;
 using TwistCore.Editor.UIComponents;
-using TwistCore.PackageDevelopment;
 using TwistCore.PackageDevelopment.Editor;
-using TwistCore.PackageRegistry;
 using TwistCore.PackageRegistry.Editor;
 using UnityEditor;
 using UnityEditor.Compilation;
@@ -35,13 +31,10 @@ namespace RequestForMirror.Editor
             AddSection("General", () =>
             {
                 EnumPopup("Serialization Method", ref Settings.serializationMethod,
-                    newValue =>
-                    {
-                        CodeGen.GenerateScripts(true);
-                    });
+                    newValue => { CodeGen.GenerateScripts(true); });
                 EnumPopup("Transport Method", ref Settings.transportMethod);
             });
-            
+
             AddSection("Core Management", () =>
             {
                 this.DrawCachedComponent("CoreUnpackWidget");
@@ -53,13 +46,13 @@ namespace RequestForMirror.Editor
         {
             var dependencyName = "com.unity.editorcoroutines";
             var alias = UPMCollection.GetFromAllPackages(dependencyName).Alias();
-            
-            var files = Directory.GetFiles(Path.Combine("Packages", dependencyName), "*.asmdef", SearchOption.AllDirectories);
+
+            var files = Directory.GetFiles(Path.Combine("Packages", dependencyName), "*.asmdef",
+                SearchOption.AllDirectories);
             Debug.Log(files[0]);
             Debug.Log(AssetDatabase.GUIDFromAssetPath(files[0]));
 
             foreach (var assembly in CompilationPipeline.GetAssemblies())
-            {
                 //var newRef = assembly.assemblyReferences.ToList();
                 //newRef.Add(null);
                 //CompilationPipeline.
@@ -69,14 +62,14 @@ namespace RequestForMirror.Editor
                     // {
                     //     Path.Combine("Packages", dependencyName)
                     // })?[0] ?? "0");
-                        
+
                     Debug.Log(assembly.outputPath);
-                    Debug.Log(CompilationPipeline.GUIDToAssemblyDefinitionReferenceGUID(AssetDatabase.AssetPathToGUID(assembly.outputPath)));
-                    Debug.Log(AssetDatabase.GUIDToAssetPath("478a2357cc57436488a56e564b08d223")); 
+                    Debug.Log(CompilationPipeline.GUIDToAssemblyDefinitionReferenceGUID(
+                        AssetDatabase.AssetPathToGUID(assembly.outputPath)));
+                    Debug.Log(AssetDatabase.GUIDToAssetPath("478a2357cc57436488a56e564b08d223"));
                 }
-            }
         }
-        
+
         [MenuItem("Tools/Twist Apps/Request for Mirror Settings")]
         public static void OnMenuItemClick()
         {

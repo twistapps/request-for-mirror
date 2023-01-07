@@ -18,14 +18,23 @@ namespace RequestForMirror
             ID++;
             return new RequestId(ID);
         }
-        
-        public static implicit operator RequestId(int n) => new RequestId(n);
-        public static explicit operator int(RequestId request) => request.ID;
+
+        public static implicit operator RequestId(int n)
+        {
+            return new RequestId(n);
+        }
+
+        public static explicit operator int(RequestId request)
+        {
+            return request.ID;
+        }
     }
-    
+
     public static class RequestIdProvider
     {
-        private static readonly Dictionary<int, RequestId> RequestIdsPerClient = new Dictionary<int, RequestId>(); //ids stored on server
+        private static readonly Dictionary<int, RequestId>
+            RequestIdsPerClient = new Dictionary<int, RequestId>(); //ids stored on server
+
         public static readonly RequestId localId = new RequestId(0); //id stored in client
 
         static RequestIdProvider()
@@ -38,14 +47,14 @@ namespace RequestForMirror
         {
             const int hostConnectionId = 0;
             if (!RequestIdsPerClient.ContainsKey(hostConnectionId))
-                RequestIdsPerClient.Add(hostConnectionId,0);
+                RequestIdsPerClient.Add(hostConnectionId, 0);
         }
 
         private static void OnConnectedEvent(NetworkConnectionToClient conn)
         {
             RequestIdsPerClient[conn.connectionId] = 0;
         }
-        
+
         private static void OnDisconnectedEvent(NetworkConnectionToClient conn)
         {
             RequestIdsPerClient.Remove(conn.connectionId);

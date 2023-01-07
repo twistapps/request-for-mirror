@@ -9,7 +9,7 @@ namespace RequestForMirror.Editor
     public static class NetworkMessagesGenerator
     {
         private const string NetworkMessageTemplatesFolder = "NetworkMessages";
-        
+
         [DidReloadScripts]
         private static void OnScriptsReload()
         {
@@ -20,18 +20,19 @@ namespace RequestForMirror.Editor
         {
             var builder = new CodeGenTemplateBuilder();
             //var template = Path.ChangeExtension(CodeGen.FindTxtTemplate(type), "NetworkMessage.txt");
-            var outputPath = Path.Combine(CodeGenDefinitions.GeneratedFolder, NetworkMessageTemplatesFolder, type.Name + ".cs");
-            
+            var outputPath = Path.Combine(CodeGenDefinitions.GeneratedFolder, NetworkMessageTemplatesFolder,
+                type.Name + ".cs");
+
             builder.SetVariablesForType(type);
             //builder.GenerateFromTemplate(template);
             var camelCaseName = char.ToLower(type.Name[0]) + type.Name.Substring(1);
-            
+
             builder.Class(Scope.Public, "Request", ClassModifier.Static, ClassModifier.Partial);
             builder.AppendLine($"public static readonly {type.Name} {camelCaseName} = new {type.Name}();");
             builder.Endfile();
             builder.SaveToCsFile(outputPath);
         }
-        
+
         private static bool ShouldGenerateCs(Type type)
         {
             if (!typeof(IRequest).IsAssignableFrom(type)) return true;

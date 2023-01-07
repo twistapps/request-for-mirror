@@ -8,7 +8,7 @@ namespace RequestForMirror
     {
         // ReSharper disable once MemberCanBePrivate.Global
         protected TReq Request;
-        
+
         [Client]
         [SuppressMessage("ReSharper", "InvertIf")]
         [SuppressMessage("ReSharper", "ConvertIfStatementToSwitchStatement")]
@@ -16,7 +16,7 @@ namespace RequestForMirror
         public void Send(TReq request, ResponseDelegate responseCallback, FailDelegate failCallback = null)
         {
             InitSend(out var usingSerializerType, responseCallback, failCallback);
-            
+
             if (usingSerializerType == RequestSerializerType.JsonUtility)
             {
                 var json = JsonUtility.ToJson(request);
@@ -46,7 +46,7 @@ namespace RequestForMirror
             CmdHandleRequest();
         }
     }
-    
+
     public abstract class Post<TReq, TReq2, TRes> : Post<TReq, TRes>
     {
         // ReSharper disable once MemberCanBePrivate.Global
@@ -56,10 +56,11 @@ namespace RequestForMirror
         [SuppressMessage("ReSharper", "InvertIf")]
         [SuppressMessage("ReSharper", "ConvertIfStatementToSwitchStatement")]
         [SuppressMessage("ReSharper", "RedundantJumpStatement")]
-        public void Send(TReq request, TReq2 request2, ResponseDelegate responseCallback, FailDelegate failCallback = null)
+        public void Send(TReq request, TReq2 request2, ResponseDelegate responseCallback,
+            FailDelegate failCallback = null)
         {
             InitSend(out var usingSerializerType, responseCallback, failCallback);
-            
+
             if (usingSerializerType == RequestSerializerType.JsonUtility)
             {
                 var json = JsonUtility.ToJson(request);

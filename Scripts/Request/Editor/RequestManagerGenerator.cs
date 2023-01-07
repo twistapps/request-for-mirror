@@ -14,7 +14,9 @@ namespace RequestForMirror.Editor
     {
         private const string RequestManagerClassname = "RequestManager";
         private const string SingletonInstanceName = "Instance";
-        private static readonly string RequestManagerPath = Path.Combine(CodeGenDefinitions.GeneratedFolder, "Modula", RequestManagerClassname);
+
+        private static readonly string RequestManagerPath =
+            Path.Combine(CodeGenDefinitions.GeneratedFolder, "Modula", RequestManagerClassname);
 
         private static CodeGenSettings _settings;
 
@@ -29,12 +31,13 @@ namespace RequestForMirror.Editor
                 Cleanup();
 #endif
         }
+
         private static void Cleanup()
         {
             var outputPaths = new[]
             {
                 Path.ChangeExtension(RequestManagerPath, ".cs"),
-                Path.ChangeExtension(RequestManagerPath, ".cs.meta") 
+                Path.ChangeExtension(RequestManagerPath, ".cs.meta")
             };
 
             foreach (var path in outputPaths)
@@ -73,7 +76,7 @@ namespace RequestForMirror.Editor
                 var name = type.Name;
                 builder.AppendLine($"public static {name} {name} => {SingletonInstanceName}.GetModule<{name}>();");
             }
-            
+
             builder.Endfile();
             builder.AppendLine("#endif");
 
@@ -86,7 +89,8 @@ namespace RequestForMirror.Editor
         {
             builder.AppendLine();
             builder.SetVariable("INSTANCE", SingletonInstanceName);
-            builder.GenerateFromTemplate(Path.Combine(CodeGenDefinitions.TemplatesFolder, "RequestManagerSingleton.txt"));
+            builder.GenerateFromTemplate(
+                Path.Combine(CodeGenDefinitions.TemplatesFolder, "RequestManagerSingleton.txt"));
         }
     }
 }

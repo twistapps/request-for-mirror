@@ -1,4 +1,3 @@
-using RequestForMirror.Editor;
 using TwistCore;
 using TwistCore.CodeGen;
 using TwistCore.CodeGen.Editor;
@@ -14,7 +13,8 @@ namespace RequestForMirror
         protected override void DrawGUI()
         {
             BeginSection("CS Finder Settings");
-            Checkbox("Auto Generate Scripts On Compile", ref SettingsUtility.Load<CodeGenSettings>().autoGenerateOnCompile);
+            Checkbox("Auto Generate Scripts On Compile",
+                ref SettingsUtility.Load<CodeGenSettings>().autoGenerateOnCompile);
             Checkbox("Debug Mode", ref SettingsUtility.Load<CodeGenSettings>().debugMode);
             EndSection();
 
@@ -27,8 +27,8 @@ namespace RequestForMirror
             InputField("SomeOtherField");
             HorizontalButtons(new Button("Create"));
             EndSection();
-            
-            
+
+
             BeginSection("Manual");
             InputField("Type name:", ref _searchYield);
         }

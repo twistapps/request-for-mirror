@@ -36,13 +36,13 @@ namespace RequestForMirror.Editor
             var variables = builder.Variables;
             var genericArguments = type.BaseType!.GetGenericArguments();
             var argumentCount = genericArguments.Length;
-        
+
             var responseIndex = argumentCount > 1 ? $"_{argumentCount}" : "";
             var key = $"{CodeGenTemplateBuilder.BaseSlug}_{CodeGenTemplateBuilder.GenericArgumentSlug}";
-            
+
             builder.SetVariable("RESPONSE_TYPE", variables[key + responseIndex]);
         }
-        
+
         [SuppressMessage("ReSharper", "InvertIf")]
         [SuppressMessage("ReSharper", "ConvertIfStatementToSwitchStatement")]
         [SuppressMessage("ReSharper", "RedundantJumpStatement")]
@@ -51,22 +51,21 @@ namespace RequestForMirror.Editor
             Debug.Log("Preprocessing codegen file...");
             if (!typeof(IRequest).IsAssignableFrom(type)) return;
             Debug.Log("Assignability test passed");
-            
-            
+
+
             var settings = SettingsUtility.Load<RequestSettings>();
             var serializerInUse = settings.serializationMethod;
 
             Debug.Log(serializerInUse);
-            
+
             if (serializerInUse == RequestSerializerType.JsonUtility)
             {
                 builder.SetVariable("SERIALIZER", "Json");
                 SetGenericArgsToString(builder);
             }
+
             if (serializerInUse == RequestSerializerType.MirrorBuiltIn)
-            {
                 builder.SetVariable("SERIALIZER", "MirrorWeaver");
-            }
             SetResponseVariable(builder, type);
         }
     }
