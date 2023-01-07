@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Mirror;
-using RequestForMirror.Utils;
 using UnityEngine;
+using TwistCore;
+using TwistCore.CodeGen;
 
 namespace RequestForMirror
 {
@@ -25,26 +26,26 @@ namespace RequestForMirror
 
         private class ResponseClientActions
         {
-            public readonly ResponseDelegate OnResponse;
-            public readonly FailDelegate OnFail;
+            public readonly ResponseDelegate onResponse;
+            public readonly FailDelegate onFail;
 
             public ResponseClientActions(ResponseDelegate onResponse, FailDelegate onFail)
             {
-                OnResponse = onResponse;
-                OnFail = onFail;
+                this.onResponse = onResponse;
+                this.onFail = onFail;
             }
         }
         // ReSharper disable once CollectionNeverQueried.Local
-        private readonly Dictionary<RequestId, ResponseClientActions> _awaitingResponses = new Dictionary<RequestId, ResponseClientActions>();
+        private readonly Dictionary<int, ResponseClientActions> _awaitingResponse = new Dictionary<int, ResponseClientActions>();
         #endregion
         
         protected void InitSend(out RequestSerializerType usingSerializerType, ResponseDelegate responseCallback,
             FailDelegate failCallback = null)
         {
-            var requestId = RequestIdProvider.LocalId.Next();
+            var requestId = RequestIdProvider.localId.Next();
             Debug.Log($"RequestID::: {requestId.ID}");
-            _awaitingResponses.Add(
-                requestId, 
+            _awaitingResponse.Add(
+                requestId.ID, 
                 new ResponseClientActions(responseCallback, failCallback));
             
             var settings = SettingsUtility.Load<RequestSettings>();
@@ -57,6 +58,7 @@ namespace RequestForMirror
             Response = new Response<TRes>();
             Sender = sender;
             _requestId = RequestIdProvider.GenerateId(Sender);
+            Debug.Log("Generated request Id: " + _requestId.ID);
             OnRequest(out var status);
             SerializeAndRespond(status, sender);
         }
@@ -96,6 +98,7 @@ namespace RequestForMirror
             Status status,
             string response)
         {
+            Debug.Log("Received response: " + id);
             var responseDeserialized = JsonUtility.FromJson<Response<TRes>>(response);
             Response.SetPayload(responseDeserialized.Payload);
             HandleResponse(id, status);
@@ -117,24 +120,25 @@ namespace RequestForMirror
         [Client]
         private void HandleResponse(int id, Status status)
         {
-            foreach (var key in _awaitingResponses.Keys)
+            Debug.Log("Awaiting response keys:");
+            foreach (var key in _awaitingResponse.Keys)
             {
                 Debug.Log(key);
             }
-            if (!_awaitingResponses.ContainsKey(id))
+            if (!_awaitingResponse.ContainsKey(id))
             {
                 Debug.LogError($"{GetType().Name}: callback with id {id} not found. Callbacks won't trigger");
                 return;
             }
 
-            var actions = _awaitingResponses[id];
+            var actions = _awaitingResponse[id];
             
             if (!status.RequestFailed)
-                actions.OnResponse?.Invoke(Response.Payload);
+                actions.onResponse?.Invoke(Response.Payload);
             else
-                actions.OnFail?.Invoke(status.Message);
+                actions.onFail?.Invoke(status.Message);
 
-            _awaitingResponses.Remove(id);
+            _awaitingResponse.Remove(id);
         }
         
         

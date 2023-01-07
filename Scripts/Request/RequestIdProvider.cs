@@ -26,7 +26,7 @@ namespace RequestForMirror
     public static class RequestIdProvider
     {
         private static readonly Dictionary<int, RequestId> RequestIdsPerClient = new Dictionary<int, RequestId>(); //ids stored on server
-        public static readonly RequestId LocalId = 0; //id stored in client
+        public static readonly RequestId localId = new RequestId(0); //id stored in client
 
         static RequestIdProvider()
         {
@@ -43,7 +43,7 @@ namespace RequestForMirror
 
         private static void OnConnectedEvent(NetworkConnectionToClient conn)
         {
-            RequestIdsPerClient.Add(conn.connectionId, 0);
+            RequestIdsPerClient[conn.connectionId] = 0;
         }
         
         private static void OnDisconnectedEvent(NetworkConnectionToClient conn)

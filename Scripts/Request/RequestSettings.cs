@@ -1,4 +1,6 @@
-﻿namespace RequestForMirror
+﻿using TwistCore;
+
+namespace RequestForMirror
 {
     public enum RequestSerializerType
     {
@@ -20,6 +22,11 @@
         public override string GetEditorWindowTitle()
         {
             return "Request for Mirror";
+        }
+
+        public override string GetPackageName()
+        {
+            return "com.twistapps.request-for-mirror";
         }
     }
 }
