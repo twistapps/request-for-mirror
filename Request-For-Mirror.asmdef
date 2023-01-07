@@ -1,18 +1,19 @@
 {
-  "name": "Request",
-  "rootNamespace": "RequestForMirror",
-  "references": [
-    "GUID:48b7cef44eb99914981fb1fc7f63ac31",
-    "GUID:30817c1a0e6d646d99c048fc403f5979",
-    "GUID:a014060d3306b9046bd366f709ec225e"
-  ],
-  "includePlatforms": [],
-  "excludePlatforms": [],
-  "allowUnsafeCode": false,
-  "overrideReferences": false,
-  "precompiledReferences": [],
-  "autoReferenced": true,
-  "defineConstraints": [],
-  "versionDefines": [],
-  "noEngineReferences": false
+    "name": "Request",
+    "rootNamespace": "RequestForMirror",
+    "references": [
+        "GUID:48b7cef44eb99914981fb1fc7f63ac31",
+        "GUID:30817c1a0e6d646d99c048fc403f5979",
+        "GUID:a014060d3306b9046bd366f709ec225e",
+        "GUID:43fde1fa00510bd44a10eff949720526"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

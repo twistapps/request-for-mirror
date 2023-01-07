@@ -26,7 +26,7 @@ namespace RequestForMirror.Editor
             //builder.GenerateFromTemplate(template);
             var camelCaseName = char.ToLower(type.Name[0]) + type.Name.Substring(1);
             
-            builder.Class(Scope.Public, "Request", @static:true, partial:true);
+            builder.Class(Scope.Public, "Request", ClassModifier.Static, ClassModifier.Partial);
             builder.AppendLine($"public static readonly {type.Name} {camelCaseName} = new {type.Name}();");
             builder.Endfile();
             builder.SaveToCsFile(outputPath);
