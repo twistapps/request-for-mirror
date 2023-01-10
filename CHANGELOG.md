@@ -1,3 +1,23 @@
+# [0.12.0](https://github.com/twistapps/request-for-mirror/compare/0.11.0...0.12.0) (2023-01-10)
+
+
+### Bug Fixes
+
+* Automated Cleanup ([85e606e](https://github.com/twistapps/request-for-mirror/commit/85e606ed397aa91968ea7db791911039fbc72787))
+* bump core version ([8d29bbd](https://github.com/twistapps/request-for-mirror/commit/8d29bbdf29e90d133d0def64889efc88c9fb22aa))
+* Bump TwistCore version ([46f4b68](https://github.com/twistapps/request-for-mirror/commit/46f4b68dd2a071680797ecec9d4cb961d26ae5f0))
+* typization in request base ([5ed6d65](https://github.com/twistapps/request-for-mirror/commit/5ed6d65b35a1001ecb45b707d9be1ed9a25f7078))
+* Update release workflow ([b3f15b3](https://github.com/twistapps/request-for-mirror/commit/b3f15b33ffe57298c7e10b6c57aa158de4fb9f7f))
+
+
+### Features
+
+* add transport method to settings ([07d68d9](https://github.com/twistapps/request-for-mirror/commit/07d68d93ddf33e65225ea88aa57d28c27be7bbbe))
+* CodeGen path definitions ([fe582be](https://github.com/twistapps/request-for-mirror/commit/fe582be77be2aeac28f6de1c18c2a6b8f005f535))
+* New TwistCore version support ([5fe2a77](https://github.com/twistapps/request-for-mirror/commit/5fe2a77c32625a933a1ad9d099d6a4345a3cd896))
+* register host connection ([9e2f9df](https://github.com/twistapps/request-for-mirror/commit/9e2f9df7a3a0901f749dbf4f8dabaf7c892d5c6f))
+* TwistCore updates ([cef8668](https://github.com/twistapps/request-for-mirror/commit/cef86688c3f11f3ae06b3c132db4180a880a505c))
+
 # [0.11.0](https://github.com/twistapps/request-for-mirror/compare/0.10.0...0.11.0) (2022-08-21)
 
 
