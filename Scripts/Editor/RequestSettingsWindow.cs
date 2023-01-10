@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using TwistCore.CodeGen.Editor;
 using TwistCore.Editor;
-using TwistCore.Editor.UIComponents;
+using TwistCore.Editor.GuiWidgets;
 using TwistCore.PackageDevelopment.Editor;
 using TwistCore.PackageRegistry.Editor;
 using UnityEditor;
