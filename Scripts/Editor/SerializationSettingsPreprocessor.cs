@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using TwistCore;
-using TwistCore.CodeGen.Editor;
+using TwistCore.Editor.CodeGen;
 using UnityEditor.Callbacks;
 using UnityEngine;
 

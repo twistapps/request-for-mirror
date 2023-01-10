@@ -1,8 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using TwistCore;
-using TwistCore.CodeGen;
-using TwistCore.CodeGen.Editor;
+using TwistCore.Editor.CodeGen;
 using UnityEditor.Callbacks;
 #if MODULA
 using Modula;

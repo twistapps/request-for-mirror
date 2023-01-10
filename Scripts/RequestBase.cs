@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Mirror;
 using TwistCore;
-using TwistCore.CodeGen;
 using UnityEngine;
 
 namespace RequestForMirror

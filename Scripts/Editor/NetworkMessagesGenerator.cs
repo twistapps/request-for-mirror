@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using TwistCore;
-using TwistCore.CodeGen.Editor;
+using TwistCore.Editor.CodeGen;
 using UnityEditor.Callbacks;
 
 namespace RequestForMirror.Editor
