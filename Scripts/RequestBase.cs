@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Mirror;
 using TwistCore;
@@ -19,6 +20,13 @@ namespace RequestForMirror
         protected Status Ok => new Status(true);
         protected Status Error => new Status(false);
 
+        public Type ResponseType => typeof(TRes);
+
+        public bool IsAwaitingResponse(int requestId)
+        {
+            return _awaitingResponse.ContainsKey(requestId);
+        }
+
         protected void InitSend(out RequestSerializerType usingSerializerType, ResponseDelegate responseCallback,
             FailDelegate failCallback = null)
         {
@@ -38,7 +46,7 @@ namespace RequestForMirror
             Response = new Response<TRes>();
             Sender = sender;
             _requestId = RequestIdProvider.GenerateId(Sender);
-            Debug.Log("Generated request Id: " + _requestId.ID);
+            Debug.Log($"Generated request Id: {_requestId.ID}; sender: {sender?.connectionId}");
             OnRequest(out var status);
             SerializeAndRespond(status, sender);
         }
@@ -55,7 +63,7 @@ namespace RequestForMirror
 
             if (serializerInUse == RequestSerializerType.JsonUtility)
             {
-                Debug.Log($"Payload: {Response.Payload}");
+                Debug.Log($"Payload: {Response.Payload} isServer: {isServer}");
                 var json = JsonUtility.ToJson(Response);
                 Debug.Log($"JSON: {json}");
                 TargetReceiveResponseJson(sender, _requestId.ID, status, json);
@@ -64,12 +72,14 @@ namespace RequestForMirror
 
             if (serializerInUse == RequestSerializerType.MirrorBuiltIn)
             {
+                TargetReceiver.SendResponse(sender, _requestId.ID, status, Response.Payload);
+
                 TargetReceiveResponseMirrorWeaver(sender, _requestId.ID, status, Response.Payload);
                 return;
             }
         }
 
-        [Client]
+        //[Client]
         // Deserialize using JsonUtility
         // ReSharper disable once UnusedParameter.Global
         protected virtual void TargetReceiveResponseJson(
@@ -87,7 +97,7 @@ namespace RequestForMirror
         [Client]
         // Deserializes using Mirror's built-in serializer
         // ReSharper disable once UnusedParameter.Global
-        protected virtual void TargetReceiveResponseMirrorWeaver(
+        public virtual void TargetReceiveResponseMirrorWeaver(
             NetworkConnection target,
             int id,
             Status status,
@@ -146,6 +156,7 @@ namespace RequestForMirror
         #endregion
     }
 
+    [Serializable]
     public class Response<TRes>
     {
         public TRes Payload;

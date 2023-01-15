@@ -11,7 +11,7 @@ namespace RequestForMirror.Editor
     [SuppressMessage("ReSharper", "ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator")]
     public static class SerializationSettingsPreprocessor
     {
-        [DidReloadScripts(-1)]
+        [DidReloadScripts(-10)]
         private static void OnScriptsReload()
         {
             CodeGen.OnBeforeCsFileGeneration += OnBeforeCsFileGeneration;
@@ -37,6 +37,8 @@ namespace RequestForMirror.Editor
             var genericArguments = type.BaseType!.GetGenericArguments();
             var argumentCount = genericArguments.Length;
 
+            if (argumentCount == 0) return;
+
             var responseIndex = argumentCount > 1 ? $"_{argumentCount}" : "";
             var key = $"{CodeGenTemplateBuilder.BaseSlug}_{CodeGenTemplateBuilder.GenericArgumentSlug}";
 
@@ -46,10 +48,12 @@ namespace RequestForMirror.Editor
         [SuppressMessage("ReSharper", "InvertIf")]
         [SuppressMessage("ReSharper", "ConvertIfStatementToSwitchStatement")]
         [SuppressMessage("ReSharper", "RedundantJumpStatement")]
+        [ExecutionOrder(-1000)]
         private static void OnBeforeCsFileGeneration(CodeGenTemplateBuilder builder, Type type)
         {
             Debug.Log("Preprocessing codegen file...");
-            if (!typeof(IRequest).IsAssignableFrom(type)) return;
+            if (!typeof(IRequest).IsAssignableFrom(type) &&
+                !typeof(TargetReceiver).IsAssignableFrom(type)) return;
             Debug.Log("Assignability test passed");
 
 

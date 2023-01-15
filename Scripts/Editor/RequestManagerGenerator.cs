@@ -53,6 +53,7 @@ namespace RequestForMirror.Editor
 
             builder.AppendLine("#if MODULA");
 
+            builder.Using("Mirror");
             builder.Using("Modula");
             builder.Using("Modula.Common");
             builder.Using("UnityEngine");
@@ -75,6 +76,12 @@ namespace RequestForMirror.Editor
                 var name = type.Name;
                 builder.AppendLine($"public static {name} {name} => {SingletonInstanceName}.GetModule<{name}>();");
             }
+
+            builder.EmptyLines(1);
+            builder.AppendLine("void Start()");
+            builder.OpenCurly();
+            builder.AppendLine("TargetReceiver.GlobalRequestManager = GetComponent<NetworkIdentity>();");
+            builder.CloseCurly();
 
             builder.Endfile();
             builder.AppendLine("#endif");

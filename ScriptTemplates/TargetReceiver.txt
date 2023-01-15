@@ -1,0 +1,15 @@
+// ReSharper disable CheckNamespace
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using Mirror;
+using UnityEngine;
+
+
+using Mirror;
+using RequestForMirror;
+
+public partial class $CLASSNAME$
+$CLASS_INNER$

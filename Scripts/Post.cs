@@ -32,18 +32,18 @@ namespace RequestForMirror
         }
 
         [Server]
-        private void CmdHandleRequestMirrorWeaver(TReq request)
+        protected virtual void CmdHandleRequestMirrorWeaver(TReq request, NetworkConnectionToClient sender = null)
         {
             Request = request;
-            CmdHandleRequest();
+            CmdHandleRequest(sender);
         }
 
         [Server]
-        private void CmdHandleRequestJson(string json)
+        protected virtual void CmdHandleRequestJson(string json, NetworkConnectionToClient sender = null)
         {
             var request = JsonUtility.FromJson<TReq>(json);
             Request = request;
-            CmdHandleRequest();
+            CmdHandleRequest(sender);
         }
     }
 
@@ -77,19 +77,20 @@ namespace RequestForMirror
         }
 
         [Server]
-        private void CmdHandleRequestMirrorWeaver(TReq request, TReq2 request2)
+        protected virtual void CmdHandleRequestMirrorWeaver(TReq request, TReq2 request2,
+            NetworkConnectionToClient sender = null)
         {
             Request = request;
             Request2 = request2;
-            CmdHandleRequest();
+            CmdHandleRequest(sender);
         }
 
         [Server]
-        private void CmdHandleRequestJson(string json, string json2)
+        protected virtual void CmdHandleRequestJson(string json, string json2, NetworkConnectionToClient sender = null)
         {
             Request = JsonUtility.FromJson<TReq>(json);
             Request2 = JsonUtility.FromJson<TReq2>(json2);
-            CmdHandleRequest();
+            CmdHandleRequest(sender);
         }
     }
 }
