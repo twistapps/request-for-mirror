@@ -9,14 +9,8 @@ namespace RequestForMirror
         [Client]
         public void Send(ResponseDelegate responseCallback, FailDelegate failCallback = null)
         {
-            RegisterResponseCallbacks(responseCallback, failCallback);
-            Receiver.SendRequest(this);
+            InitSend(out _, responseCallback, failCallback);
+            CmdHandleRequest();
         }
-        
-        protected override void HandleRequestArgs(object[] args)
-        {
-            return;
-        }
-        
     }
 }
