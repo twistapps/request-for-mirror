@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using Mirror;
 using Modula;
-using Modula.Common;
 using UnityEngine;
 
 namespace RequestForMirror
@@ -13,10 +12,15 @@ namespace RequestForMirror
         private static RequestManagerBase _globalInstance;
         public static RequestManagerBase Global => _globalInstance ??= FindGlobalInstance();
 
+        protected override void Awake()
+        {
+            base.Awake();
+        }
+
         private static RequestManagerBase FindGlobalInstance()
         {
             var requestManagers = FindObjectsOfType<RequestManagerBase>();
-            Debug.Log($"Found request managers in scene: " + requestManagers.Length);
+            Debug.Log("Found request managers in scene: " + requestManagers.Length);
             return requestManagers.FirstOrDefault(manager => manager.GetComponent<NetworkIdentity>() == null);
         }
 
@@ -25,11 +29,6 @@ namespace RequestForMirror
             //todo: notify if module is null
             if (!(GetModule(requestType) is IRequest request)) return;
             request.HandleRequest(args);
-        }
-
-        protected override void Awake()
-        {
-            base.Awake();
         }
     }
 }

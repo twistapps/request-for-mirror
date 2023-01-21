@@ -12,33 +12,14 @@ namespace RequestForMirror.Editor
 {
     public class TargetReceiverGenerator2 : ScriptableSingleton<TargetReceiverGenerator2>
     {
-        [SerializeField] private RequestMeta[] registeredRequests;
-        
         private const string GeneratedClassname = "TargetReceiver";
-        private static string OutputPath => 
-            Path.Combine(
-                CodeGenDefinitions.GeneratedFolder, 
-                GeneratedClassname);
-        
-        [Serializable]
-        private class RequestMeta
-        {
-            // ReSharper disable once InconsistentNaming
-            public string Name;
-            public SerializableType[] requestTypes;
-            public SerializableType responseType;
-            
-            public static bool operator ==(RequestMeta meta1, RequestMeta meta2)
-            {
-                return meta1?.Name == meta2?.Name;
-            }
+        [SerializeField] private RequestMeta[] registeredRequests;
 
-            public static bool operator !=(RequestMeta meta1, RequestMeta meta2)
-            {
-                return meta1?.Name != meta2?.Name;
-            }
-        }
-        
+        private static string OutputPath =>
+            Path.Combine(
+                CodeGenDefinitions.GeneratedFolder,
+                GeneratedClassname);
+
         private static RequestMeta[] GetAllRequests()
         {
             var requestTypes = EditorUtils.GetDerivedTypesExcludingSelf<IRequest>().Where(t => !t.IsAbstract);
@@ -50,11 +31,11 @@ namespace RequestForMirror.Editor
                 var genericArgs = type.BaseType!.GenericTypeArguments;
                 if (genericArgs == null || genericArgs.Length < 1) continue;
                 var tReqs = genericArgs.Length > 1 ? genericArgs.Take(genericArgs.Length - 1).ToArray() : null;
-                    
+
                 list.Add(new RequestMeta
                 {
-                    Name = type.Name, 
-                    requestTypes = SerializableType.ArrayFromTypes(tReqs), 
+                    Name = type.Name,
+                    requestTypes = SerializableType.ArrayFromTypes(tReqs),
                     responseType = genericArgs.Last()
                 });
             }
@@ -71,6 +52,7 @@ namespace RequestForMirror.Editor
                 Cleanup();
                 return;
             }
+
             if (!instance.ShouldGenerate(allRequests)) return;
             instance.registeredRequests = allRequests;
 
@@ -91,7 +73,7 @@ namespace RequestForMirror.Editor
             return !registeredRequests.All(requestMetas.Contains) ||
                    registeredRequests.Length != requestMetas.Length;
         }
-        
+
         private static void Cleanup()
         {
             var outputPaths = new[]
@@ -104,29 +86,24 @@ namespace RequestForMirror.Editor
                 if (File.Exists(path))
                     File.Delete(path);
         }
-        
+
         private void SetClassInner(CodeGenTemplateBuilder builder)
         {
             builder.StartInner();
-            
-            foreach (var request in registeredRequests)
-            {
-                AddRequest(builder, request);
-            }
+
+            foreach (var request in registeredRequests) AddRequest(builder, request);
 
             var responseTypes = new HashSet<Type>(registeredRequests.Select(request => (Type)request.responseType));
-            foreach (var responseType in responseTypes)
-            {
-                AddResponse(builder, responseType);
-            }
+            foreach (var responseType in responseTypes) AddResponse(builder, responseType);
 
             builder.EndInner();
         }
 
         private static void AddRequest(CodeGenBuilder builder, RequestMeta request)
         {
-            var @params = request.requestTypes?.Select(t => t.SerializedType.Name + " request").ToList() ?? new List<string>();
-            for (var i = 1; i < @params.Count; i++) @params[i] += i+1; //TReq2 request2, TReq3 request3 etc.
+            var @params = request.requestTypes?.Select(t => t.SerializedType.Name + " request").ToList() ??
+                          new List<string>();
+            for (var i = 1; i < @params.Count; i++) @params[i] += i + 1; //TReq2 request2, TReq3 request3 etc.
             @params.Add("NetworkConnectionToClient sender = null");
 
             var paramNames = new List<string>();
@@ -138,8 +115,9 @@ namespace RequestForMirror.Editor
                     if (i > 0) param += i + 1;
                     paramNames.Add(param);
                 }
+
             paramNames.Add("sender");
-            
+
             //builder.AppendLine("[Command]");
             builder.AppendLine("[Command(requiresAuthority = false)]");
             builder.AppendLine($"public void CmdHandleRequest_{request.Name}({string.Join(", ", @params)})");
@@ -157,6 +135,25 @@ namespace RequestForMirror.Editor
             builder.OpenCurly();
             builder.AppendLine("PushResponseOnClient(target, requestId, status, response);");
             builder.CloseCurly();
+        }
+
+        [Serializable]
+        private class RequestMeta
+        {
+            // ReSharper disable once InconsistentNaming
+            public string Name;
+            public SerializableType[] requestTypes;
+            public SerializableType responseType;
+
+            public static bool operator ==(RequestMeta meta1, RequestMeta meta2)
+            {
+                return meta1?.Name == meta2?.Name;
+            }
+
+            public static bool operator !=(RequestMeta meta1, RequestMeta meta2)
+            {
+                return meta1?.Name != meta2?.Name;
+            }
         }
     }
 }

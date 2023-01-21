@@ -44,10 +44,7 @@ namespace RequestForMirror.Editor
         {
             if (types == null) return null;
             var arr = new SerializableType[types.Length];
-            for (var i = 0; i < arr.Length; i++)
-            {
-                arr[i] = (SerializableType)types[i];
-            }
+            for (var i = 0; i < arr.Length; i++) arr[i] = types[i];
 
             return arr;
         }
@@ -56,10 +53,7 @@ namespace RequestForMirror.Editor
         {
             if (types == null) return null;
             var arr = new SerializableType[types.Count];
-            for (var i = 0; i < arr.Length; i++)
-            {
-                arr[i] = (SerializableType)types[i];
-            }
+            for (var i = 0; i < arr.Length; i++) arr[i] = types[i];
 
             return arr;
         }

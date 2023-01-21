@@ -10,7 +10,7 @@
             ID = id;
         }
 
-        public RequestId Next() 
+        public RequestId Next()
         {
             ID++;
             return new RequestId(ID);

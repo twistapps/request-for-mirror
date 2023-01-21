@@ -17,7 +17,8 @@ namespace RequestForMirror
             NetworkServer.OnConnectedEvent += OnConnectedEvent;
             NetworkServer.OnDisconnectedEvent += OnDisconnectedEvent;
 
-            NetworkClient.OnConnectedEvent += () => LocalID = new RequestId(0);;
+            NetworkClient.OnConnectedEvent += () => LocalID = new RequestId(0);
+            ;
 
             NetworkManagerWithEvents.ExecuteWhenStartedHost(RegisterHostConnection);
             RegisterAlreadyConnected();

@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Mirror;
-using UnityEngine;
 
 namespace RequestForMirror
 {
@@ -31,7 +30,7 @@ namespace RequestForMirror
             //     return;
             // }
         }
-        
+
         protected override void HandleRequestArgs(object[] args)
         {
             Request = (TReq)args[0];

@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Mirror;
-using TwistCore;
 using UnityEngine;
-using Object = System.Object;
 
 namespace RequestForMirror
 {
-    
     public abstract class RequestBase<TRes> : MonoBehaviour, IRequest
     {
         private RequestId _requestId; // server only
@@ -30,7 +27,7 @@ namespace RequestForMirror
 
         public void HandleRequest(object[] args)
         {
-            Sender = (NetworkConnectionToClient)args[args.Length-1];
+            Sender = (NetworkConnectionToClient)args[args.Length - 1];
             Response = new Response<TRes>();
             HandleRequestArgs(args);
             _requestId = RequestIdProvider.GenerateId(Sender);
@@ -40,7 +37,7 @@ namespace RequestForMirror
         }
 
         protected abstract void HandleRequestArgs(object[] args);
-        
+
         protected void RegisterResponseCallbacks(ResponseDelegate responseCallback,
             FailDelegate failCallback = null)
         {

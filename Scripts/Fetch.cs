@@ -12,11 +12,9 @@ namespace RequestForMirror
             RegisterResponseCallbacks(responseCallback, failCallback);
             Receiver.SendRequest(this);
         }
-        
+
         protected override void HandleRequestArgs(object[] args)
         {
-            return;
         }
-        
     }
 }

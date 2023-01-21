@@ -23,7 +23,7 @@ namespace RequestForMirror.Editor
         [DidReloadScripts(2)]
         private static void OnScriptsReloadedOrChanged()
         {
-            _settings = SettingsUtility.Load<CodeGenSettings>(); 
+            _settings = SettingsUtility.Load<CodeGenSettings>();
             if (_settings.autoGenerateOnCompile)
 #if MODULA
                 GenerateScripts();
@@ -50,12 +50,12 @@ namespace RequestForMirror.Editor
             var builder = new CodeGenTemplateBuilder();
 
             var types = EditorUtils.GetDerivedTypesExcludingSelf<IModule>().Where(type =>
-                typeof(IRequest).IsAssignableFrom(type) && 
-                !type.Name.Contains('`') && 
-                !type.IsAbstract && 
+                typeof(IRequest).IsAssignableFrom(type) &&
+                !type.Name.Contains('`') &&
+                !type.IsAbstract &&
                 !ignored.Contains(type.Name)
             );
-            
+
             // var types = CodeGen.GetTypes()
             //     //filter modules only
             //     .Where(type => typeof(IModule).IsAssignableFrom(type) && !ignored.Contains(type.Name));
@@ -89,7 +89,7 @@ namespace RequestForMirror.Editor
             builder.EmptyLines(1);
 
             var lines = builder.GetVariableLines(CodeGenTemplateBuilder.CLASS_INNER).ToList();
-            int awakeLine = lines.FindIndex(line => line.Contains("void Awake()"));
+            var awakeLine = lines.FindIndex(line => line.Contains("void Awake()"));
             lines[awakeLine] = "    protected override void Awake()";
             lines.Insert(awakeLine + 2,
                 "        Receiver.GlobalRequestManager = GetComponent<NetworkIdentity>();");
