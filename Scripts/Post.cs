@@ -15,36 +15,42 @@ namespace RequestForMirror
         [SuppressMessage("ReSharper", "RedundantJumpStatement")]
         public void Send(TReq request, ResponseDelegate responseCallback, FailDelegate failCallback = null)
         {
-            InitSend(out var usingSerializerType, responseCallback, failCallback);
-
-            if (usingSerializerType == RequestSerializerType.JsonUtility)
-            {
-                var json = JsonUtility.ToJson(request);
-                CmdHandleRequestJson(json);
-                return;
-            }
-
-            if (usingSerializerType == RequestSerializerType.MirrorBuiltIn)
-            {
-                CmdHandleRequestMirrorWeaver(request);
-                return;
-            }
-        }
-
-        [Server]
-        private void CmdHandleRequestMirrorWeaver(TReq request)
-        {
             Request = request;
-            CmdHandleRequest();
+            RegisterResponseCallbacks(responseCallback, failCallback);
+            Receiver.SendRequest(this);
+            // if (usingSerializerType == RequestSerializerType.JsonUtility)
+            // {
+            //     var json = JsonUtility.ToJson(request);
+            //     CmdHandleRequestJson(json);
+            //     return;
+            // }
+            //
+            // if (usingSerializerType == RequestSerializerType.MirrorBuiltIn)
+            // {
+            //     CmdHandleRequestMirrorWeaver(request);
+            //     return;
+            // }
+        }
+        
+        protected override void HandleRequestArgs(object[] args)
+        {
+            Request = (TReq)args[0];
         }
 
-        [Server]
-        private void CmdHandleRequestJson(string json)
-        {
-            var request = JsonUtility.FromJson<TReq>(json);
-            Request = request;
-            CmdHandleRequest();
-        }
+        // [Server]
+        // protected virtual void CmdHandleRequestMirrorWeaver(TReq request, NetworkConnectionToClient sender = null)
+        // {
+        //     Request = request;
+        //     CmdHandleRequest(sender);
+        // }
+
+        // [Server]
+        // protected virtual void CmdHandleRequestJson(string json, NetworkConnectionToClient sender = null)
+        // {
+        //     var request = JsonUtility.FromJson<TReq>(json);
+        //     Request = request;
+        //     CmdHandleRequest(sender);
+        // }
     }
 
     public abstract class Post<TReq, TReq2, TRes> : Post<TReq, TRes>
@@ -59,37 +65,46 @@ namespace RequestForMirror
         public void Send(TReq request, TReq2 request2, ResponseDelegate responseCallback,
             FailDelegate failCallback = null)
         {
-            InitSend(out var usingSerializerType, responseCallback, failCallback);
-
-            if (usingSerializerType == RequestSerializerType.JsonUtility)
-            {
-                var json = JsonUtility.ToJson(request);
-                var json2 = JsonUtility.ToJson(request2);
-                CmdHandleRequestJson(json, json2);
-                return;
-            }
-
-            if (usingSerializerType == RequestSerializerType.MirrorBuiltIn)
-            {
-                CmdHandleRequestMirrorWeaver(request, request2);
-                return;
-            }
-        }
-
-        [Server]
-        private void CmdHandleRequestMirrorWeaver(TReq request, TReq2 request2)
-        {
             Request = request;
             Request2 = request2;
-            CmdHandleRequest();
+            RegisterResponseCallbacks(responseCallback, failCallback);
+            Receiver.SendRequest(this);
+            // if (usingSerializerType == RequestSerializerType.JsonUtility)
+            // {
+            //     var json = JsonUtility.ToJson(request);
+            //     var json2 = JsonUtility.ToJson(request2);
+            //     CmdHandleRequestJson(json, json2);
+            //     return;
+            // }
+            //
+            // if (usingSerializerType == RequestSerializerType.MirrorBuiltIn)
+            // {
+            //     CmdHandleRequestMirrorWeaver(request, request2);
+            //     return;
+            // }
         }
 
-        [Server]
-        private void CmdHandleRequestJson(string json, string json2)
+        protected override void HandleRequestArgs(object[] args)
         {
-            Request = JsonUtility.FromJson<TReq>(json);
-            Request2 = JsonUtility.FromJson<TReq2>(json2);
-            CmdHandleRequest();
+            Request = (TReq)args[0];
+            Request2 = (TReq2)args[1];
         }
+
+        // [Server]
+        // protected virtual void CmdHandleRequestMirrorWeaver(TReq request, TReq2 request2,
+        //     NetworkConnectionToClient sender = null)
+        // {
+        //     Request = request;
+        //     Request2 = request2;
+        //     CmdHandleRequest(sender);
+        // }
+        //
+        // [Server]
+        // protected virtual void CmdHandleRequestJson(string json, string json2, NetworkConnectionToClient sender = null)
+        // {
+        //     Request = JsonUtility.FromJson<TReq>(json);
+        //     Request2 = JsonUtility.FromJson<TReq2>(json2);
+        //     CmdHandleRequest(sender);
+        // }
     }
 }
