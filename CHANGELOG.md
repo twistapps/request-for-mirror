@@ -1,3 +1,12 @@
+# [0.13.0](https://github.com/twistapps/request-for-mirror/compare/0.12.0...0.13.0) (2023-01-21)
+
+
+### Features
+
+* NetworkManagerWithEvents ([d138709](https://github.com/twistapps/request-for-mirror/commit/d13870984cea55d6c4c98a62de5888ccbf76912e))
+* SerializableType ([245b91b](https://github.com/twistapps/request-for-mirror/commit/245b91bc3979dfc25b0a2fdf93b6e68adcef1537))
+* upgrade to NetworkManagerWithEvents ([590f6fa](https://github.com/twistapps/request-for-mirror/commit/590f6fa892cdf1113056f2f405973c53ed600690))
+
 # [0.12.0](https://github.com/twistapps/request-for-mirror/compare/0.11.0...0.12.0) (2023-01-10)
 
 
