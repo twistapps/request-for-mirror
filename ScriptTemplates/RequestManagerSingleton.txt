@@ -19,9 +19,5 @@
         _instance = this;
     }
 
-    private void Awake() 
-    {
-        base.Awake();
-        InitializeSingleton();
-    }
+    private void Awake() => InitializeSingleton();
     private void Reset() => InitializeSingleton();

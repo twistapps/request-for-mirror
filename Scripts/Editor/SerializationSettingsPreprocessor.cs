@@ -11,10 +11,10 @@ namespace RequestForMirror.Editor
     [SuppressMessage("ReSharper", "ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator")]
     public static class SerializationSettingsPreprocessor
     {
-        [DidReloadScripts(-10)]
+        [DidReloadScripts(-1)]
         private static void OnScriptsReload()
         {
-            CodeGen.OnBeforeCsFileGenerated += OnBeforeCsFileGeneration;
+            CodeGen.OnBeforeCsFileGeneration += OnBeforeCsFileGeneration;
         }
 
         private static void SetGenericArgsToString(CodeGenTemplateBuilder builder)
@@ -37,8 +37,6 @@ namespace RequestForMirror.Editor
             var genericArguments = type.BaseType!.GetGenericArguments();
             var argumentCount = genericArguments.Length;
 
-            if (argumentCount == 0) return;
-
             var responseIndex = argumentCount > 1 ? $"_{argumentCount}" : "";
             var key = $"{CodeGenTemplateBuilder.BaseSlug}_{CodeGenTemplateBuilder.GenericArgumentSlug}";
 
@@ -48,22 +46,26 @@ namespace RequestForMirror.Editor
         [SuppressMessage("ReSharper", "InvertIf")]
         [SuppressMessage("ReSharper", "ConvertIfStatementToSwitchStatement")]
         [SuppressMessage("ReSharper", "RedundantJumpStatement")]
-        [ExecutionOrder(-1000)]
         private static void OnBeforeCsFileGeneration(CodeGenTemplateBuilder builder, Type type)
         {
-            //Debug.Log("Preprocessing codegen file...");
-            if (!typeof(IRequest).IsAssignableFrom(type) &&
-                !typeof(Receiver).IsAssignableFrom(type)) return;
-            //Debug.Log("Assignability test passed");
+            Debug.Log("Preprocessing codegen file...");
+            if (!typeof(IRequest).IsAssignableFrom(type)) return;
+            Debug.Log("Assignability test passed");
 
 
             var settings = SettingsUtility.Load<RequestSettings>();
             var serializerInUse = settings.serializationMethod;
 
+            Debug.Log(serializerInUse);
 
-            builder.SetVariable("SERIALIZER", RequestSettings.CurrentSerializer);
-            if (serializerInUse == RequestSerializerType.JsonUtility) SetGenericArgsToString(builder);
+            if (serializerInUse == RequestSerializerType.JsonUtility)
+            {
+                builder.SetVariable("SERIALIZER", "Json");
+                SetGenericArgsToString(builder);
+            }
 
+            if (serializerInUse == RequestSerializerType.MirrorBuiltIn)
+                builder.SetVariable("SERIALIZER", "MirrorWeaver");
             SetResponseVariable(builder, type);
         }
     }
