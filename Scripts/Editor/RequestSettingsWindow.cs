@@ -32,6 +32,16 @@ namespace RequestForMirror.Editor
                     newValue => { CodeGen.GenerateScripts(true); });
                 EnumPopup("Transport Method", ref Settings.transportMethod);
             });
+            
+            AddSection("Development", () =>
+            {
+                EnumPopup("Log Level", ref Settings.logLevel);
+            });
+            
+            AddSection("Performance", () =>
+            {
+                Checkbox("Cache MethodInfo", ref Settings.cacheMethodInfo);
+            });
 
             AddSection("Core Management", () =>
             {
