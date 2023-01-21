@@ -10,15 +10,15 @@ using RequestForMirror;
 
 public partial class $CLASSNAME$
 {
-    [Command]
+    [Command(requiresAuthority = false)]
     protected override void CmdHandleRequest(NetworkConnectionToClient sender = null)
     {
         base.CmdHandleRequest(sender);
     }
     
-    [TargetRpc]
-    protected override void TargetReceiveResponse$SERIALIZER$(NetworkConnection target, int requestId, Status status, $RESPONSE_TYPE$ response)
-    {
-        base.TargetReceiveResponse$SERIALIZER$(target, requestId, status, response);
-    }
+    //[TargetRpc]
+    //public override void TargetReceiveResponse$SERIALIZER$(NetworkConnection target, int requestId, Status status, $RESPONSE_TYPE$ response)
+    //{
+    //    base.TargetReceiveResponse$SERIALIZER$(target, requestId, status, response);
+    //}
 }

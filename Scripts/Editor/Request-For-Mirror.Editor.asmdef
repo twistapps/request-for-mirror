@@ -1,24 +1,25 @@
 {
-  "name": "Request-For-Mirror.Editor",
-  "rootNamespace": "",
-  "references": [
-    "GUID:48b7cef44eb99914981fb1fc7f63ac31",
-    "GUID:7f96509675bb4974d89a69758f68bdc8",
-    "GUID:a0f4a422ba765b14298ebd304001ac6f",
-    "GUID:6055be8ebefd69e48b49212b09b47b2f",
-    "GUID:478a2357cc57436488a56e564b08d223",
-    "GUID:a014060d3306b9046bd366f709ec225e",
-    "GUID:43fde1fa00510bd44a10eff949720526"
-  ],
-  "includePlatforms": [
-    "Editor"
-  ],
-  "excludePlatforms": [],
-  "allowUnsafeCode": false,
-  "overrideReferences": false,
-  "precompiledReferences": [],
-  "autoReferenced": true,
-  "defineConstraints": [],
-  "versionDefines": [],
-  "noEngineReferences": false
+    "name": "Request-For-Mirror.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:48b7cef44eb99914981fb1fc7f63ac31",
+        "GUID:7f96509675bb4974d89a69758f68bdc8",
+        "GUID:a0f4a422ba765b14298ebd304001ac6f",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:478a2357cc57436488a56e564b08d223",
+        "GUID:a014060d3306b9046bd366f709ec225e",
+        "GUID:43fde1fa00510bd44a10eff949720526",
+        "GUID:30817c1a0e6d646d99c048fc403f5979"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

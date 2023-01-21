@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
 using Mirror;
 using TwistCore;
 using UnityEngine;
+using Object = System.Object;
 
 namespace RequestForMirror
 {
-    public abstract class RequestBase<TRes> : NetworkBehaviour, IMarkedForCodeGen, IRequest
+    
+    public abstract class RequestBase<TRes> : MonoBehaviour, IRequest
     {
         private RequestId _requestId; // server only
 
@@ -19,107 +21,76 @@ namespace RequestForMirror
         protected Status Ok => new Status(true);
         protected Status Error => new Status(false);
 
-        protected void InitSend(out RequestSerializerType usingSerializerType, ResponseDelegate responseCallback,
+        public Type ResponseType => typeof(TRes);
+
+        public bool IsAwaitingResponse(int requestId)
+        {
+            return _awaitingResponse.ContainsKey(requestId);
+        }
+
+        public void HandleRequest(object[] args)
+        {
+            Sender = (NetworkConnectionToClient)args[args.Length-1];
+            Response = new Response<TRes>();
+            HandleRequestArgs(args);
+            _requestId = RequestIdProvider.GenerateId(Sender);
+            Debugg.Log($"[Server] Generated request Id: {_requestId.ID}; sender: {Sender?.connectionId}");
+            var status = OnRequest();
+            Receiver.SendResponse(Sender, _requestId.ID, status, Response.payload);
+        }
+
+        protected abstract void HandleRequestArgs(object[] args);
+        
+        protected void RegisterResponseCallbacks(ResponseDelegate responseCallback,
             FailDelegate failCallback = null)
         {
-            var requestId = RequestIdProvider.localId.Next();
-            Debug.Log($"RequestID::: {requestId.ID}");
+            var requestId = RequestIdProvider.LocalID.Next();
+            Debugg.Log($"[Client] Preparing to send RequestID:::{requestId.ID}");
             _awaitingResponse.Add(
                 requestId.ID,
                 new ResponseClientActions(responseCallback, failCallback));
-
-            var settings = SettingsUtility.Load<RequestSettings>();
-            usingSerializerType = settings.serializationMethod;
         }
 
-        [Server]
-        protected virtual void CmdHandleRequest(NetworkConnectionToClient sender = null)
-        {
-            Response = new Response<TRes>();
-            Sender = sender;
-            _requestId = RequestIdProvider.GenerateId(Sender);
-            Debug.Log("Generated request Id: " + _requestId.ID);
-            OnRequest(out var status);
-            SerializeAndRespond(status, sender);
-        }
-
-        [Server]
-        [SuppressMessage("ReSharper", "InvertIf")]
-        [SuppressMessage("ReSharper", "ConvertIfStatementToSwitchStatement")]
-        [SuppressMessage("ReSharper", "RedundantJumpStatement")]
-        private void SerializeAndRespond(Status status, NetworkConnectionToClient sender = null)
-        {
-            var settings = SettingsUtility.Load<RequestSettings>();
-            var serializerInUse = settings.serializationMethod;
-
-
-            if (serializerInUse == RequestSerializerType.JsonUtility)
-            {
-                Debug.Log($"Payload: {Response.Payload}");
-                var json = JsonUtility.ToJson(Response);
-                Debug.Log($"JSON: {json}");
-                TargetReceiveResponseJson(sender, _requestId.ID, status, json);
-                return;
-            }
-
-            if (serializerInUse == RequestSerializerType.MirrorBuiltIn)
-            {
-                TargetReceiveResponseMirrorWeaver(sender, _requestId.ID, status, Response.Payload);
-                return;
-            }
-        }
-
-        [Client]
-        // Deserialize using JsonUtility
-        // ReSharper disable once UnusedParameter.Global
-        protected virtual void TargetReceiveResponseJson(
-            NetworkConnection target,
-            int id,
-            Status status,
-            string response)
-        {
-            Debug.Log("Received response: " + id);
-            var responseDeserialized = JsonUtility.FromJson<Response<TRes>>(response);
-            Response.SetPayload(responseDeserialized.Payload);
-            HandleResponse(id, status);
-        }
-
-        [Client]
+        //[Client]
         // Deserializes using Mirror's built-in serializer
         // ReSharper disable once UnusedParameter.Global
-        protected virtual void TargetReceiveResponseMirrorWeaver(
+        public virtual void TargetReceiveResponseMirrorWeaver(
             NetworkConnection target,
             int id,
             Status status,
             TRes response)
         {
-            Response.SetPayload(response);
+            Response = new Response<TRes>();
+            if (response != null)
+                Response.SetPayload(response);
             HandleResponse(id, status);
         }
 
         [Client]
         private void HandleResponse(int id, Status status)
         {
-            Debug.Log("Awaiting response keys:");
-            foreach (var key in _awaitingResponse.Keys) Debug.Log(key);
+            var keys = string.Join(", ", _awaitingResponse.Keys);
+            Debugg.Log("Awaiting response keys: " + keys);
+
             if (!_awaitingResponse.ContainsKey(id))
             {
-                Debug.LogError($"{GetType().Name}: callback with id {id} not found. Callbacks won't trigger");
+                Debugg.LogError($"{GetType().Name}: callback with id {id} not found. Callbacks won't trigger");
                 return;
             }
 
             var actions = _awaitingResponse[id];
 
             if (!status.RequestFailed)
-                actions.onResponse?.Invoke(Response.Payload);
+                actions.OnResponse?.Invoke(Response.payload);
             else
-                actions.onFail?.Invoke(status.Message);
+                actions.OnFail?.Invoke(status.Message);
 
             _awaitingResponse.Remove(id);
         }
 
 
-        protected abstract void OnRequest(out Status status);
+        //todo: change to 'abstract Status OnRequest()'
+        protected abstract Status OnRequest();
 
         #region Client Actions
 
@@ -129,13 +100,13 @@ namespace RequestForMirror
 
         private class ResponseClientActions
         {
-            public readonly FailDelegate onFail;
-            public readonly ResponseDelegate onResponse;
+            public readonly FailDelegate OnFail;
+            public readonly ResponseDelegate OnResponse;
 
             public ResponseClientActions(ResponseDelegate onResponse, FailDelegate onFail)
             {
-                this.onResponse = onResponse;
-                this.onFail = onFail;
+                OnResponse = onResponse;
+                OnFail = onFail;
             }
         }
 
@@ -144,39 +115,5 @@ namespace RequestForMirror
             new Dictionary<int, ResponseClientActions>();
 
         #endregion
-    }
-
-    public class Response<TRes>
-    {
-        public TRes Payload;
-
-        public void SetPayload(TRes data)
-        {
-            Payload = data;
-        }
-    }
-
-    [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    public class Status
-    {
-        public readonly bool RequestFailed;
-        public string Message;
-
-        public Status(bool ok, string message = null)
-        {
-            RequestFailed = !ok;
-            Message = message;
-        }
-
-        // Required by Mirror's serializer
-        public Status()
-        {
-        }
-
-        public Status SetMessage(string message)
-        {
-            Message = message;
-            return this;
-        }
     }
 }

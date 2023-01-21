@@ -2,22 +2,19 @@
 
 namespace RequestForMirror
 {
-    public enum RequestSerializerType
-    {
-        JsonUtility,
-        MirrorBuiltIn
-    }
-
-    public enum NetworkTransportMethod
-    {
-        NetworkMessages,
-        HighLevelCommands
-    }
-
     public class RequestSettings : SettingsAsset
     {
         public RequestSerializerType serializationMethod;
         public NetworkTransportMethod transportMethod;
+        public LogLevel logLevel;
+        public bool cacheMethodInfo = true;
+
+        public static string CurrentSerializer => SettingsUtility.Load<RequestSettings>().serializationMethod switch
+        {
+            RequestSerializerType.JsonUtility => "Json",
+            RequestSerializerType.MirrorBuiltIn => "MirrorWeaver",
+            _ => "MirrorWeaver"
+        };
 
         public override string GetEditorWindowTitle()
         {
