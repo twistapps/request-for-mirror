@@ -7,10 +7,13 @@ using UnityEngine;
 
 namespace RequestForMirror
 {
+    //todo: rename to RequestGroup?
     public abstract class RequestManagerBase : ModularBehaviour
     {
         private static RequestManagerBase _globalInstance;
         public static RequestManagerBase Global => _globalInstance ??= FindGlobalInstance();
+
+        public bool IsGlobal => GetComponent<NetworkIdentity>() == null;
 
         protected override void Awake()
         {
