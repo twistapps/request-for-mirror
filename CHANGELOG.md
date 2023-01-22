@@ -1,3 +1,17 @@
+# [1.1.0](https://github.com/twistapps/request-for-mirror/compare/1.0.0...1.1.0) (2023-01-22)
+
+
+### Bug Fixes
+
+* Automated cleanup ([ab6a8a5](https://github.com/twistapps/request-for-mirror/commit/ab6a8a59bc9fc2d703546a06eb8d65a64dd5c25a))
+* Cleanup ([8690e43](https://github.com/twistapps/request-for-mirror/commit/8690e43394fbb3abd3bff216beec769e34a331b2))
+* Refactor naming, comply conventions etc ([aa38011](https://github.com/twistapps/request-for-mirror/commit/aa3801145aa8520c2778a658dd00cc76a8dd20ad))
+
+
+### Features
+
+* bool RequestManager.IsGlobal ([f69a662](https://github.com/twistapps/request-for-mirror/commit/f69a6629b1937ffc9a2e6fe6898c0c59ee98e8c2))
+
 # [1.0.0](https://github.com/twistapps/request-for-mirror/compare/0.13.0...1.0.0) (2023-01-21)
 
 
