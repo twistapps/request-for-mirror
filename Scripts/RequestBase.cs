@@ -31,7 +31,7 @@ namespace RequestForMirror
             Response = new Response<TRes>();
             HandleRequestArgs(args);
             _requestId = RequestIdProvider.GenerateId(Sender);
-            Debugg.Log($"[Server] Generated request Id: {_requestId.ID}; sender: {Sender?.connectionId}");
+            DebugLevels.Log($"[Server] Generated request Id: {_requestId.ID}; sender: {Sender?.connectionId}");
             var status = OnRequest();
             Receiver.SendResponse(Sender, _requestId.ID, status, Response.payload);
         }
@@ -42,7 +42,7 @@ namespace RequestForMirror
             FailDelegate failCallback = null)
         {
             var requestId = RequestIdProvider.LocalID.Next();
-            Debugg.Log($"[Client] Preparing to send RequestID:::{requestId.ID}");
+            DebugLevels.Log($"[Client] Preparing to send RequestID:::{requestId.ID}");
             _awaitingResponse.Add(
                 requestId.ID,
                 new ResponseClientActions(responseCallback, failCallback));
@@ -67,11 +67,11 @@ namespace RequestForMirror
         private void HandleResponse(int id, Status status)
         {
             var keys = string.Join(", ", _awaitingResponse.Keys);
-            Debugg.Log("Awaiting response keys: " + keys);
+            DebugLevels.Log("Awaiting response keys: " + keys);
 
             if (!_awaitingResponse.ContainsKey(id))
             {
-                Debugg.LogError($"{GetType().Name}: callback with id {id} not found. Callbacks won't trigger");
+                DebugLevels.LogError($"{GetType().Name}: callback with id {id} not found. Callbacks won't trigger");
                 return;
             }
 

@@ -1,8 +1,8 @@
 ﻿namespace RequestForMirror
 {
-    public enum NetworkTransportMethod
+    public enum TransportMethod
     {
-        NetworkMessages,
+        NetworkMessages, //WIP Feature
         HighLevelCommands
     }
 }

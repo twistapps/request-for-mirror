@@ -11,7 +11,7 @@ namespace RequestForMirror
         LogAll = 1
     }
 
-    public static class Debugg
+    public static class DebugLevels
     {
         private static RequestSettings _settings;
         private static RequestSettings Settings => _settings ??= SettingsUtility.Load<RequestSettings>();

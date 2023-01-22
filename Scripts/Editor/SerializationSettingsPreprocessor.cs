@@ -62,7 +62,7 @@ namespace RequestForMirror.Editor
 
 
             builder.SetVariable("SERIALIZER", RequestSettings.CurrentSerializer);
-            if (serializerInUse == RequestSerializerType.JsonUtility) SetGenericArgsToString(builder);
+            if (serializerInUse == Serializer.JsonUtility) SetGenericArgsToString(builder);
 
             SetResponseVariable(builder, type);
         }

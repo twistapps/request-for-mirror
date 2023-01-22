@@ -4,15 +4,15 @@ namespace RequestForMirror
 {
     public class RequestSettings : SettingsAsset
     {
-        public RequestSerializerType serializationMethod;
-        public NetworkTransportMethod transportMethod;
+        public Serializer serializationMethod;
+        public TransportMethod transportMethod;
         public LogLevel logLevel;
         public bool cacheMethodInfo = true;
 
         public static string CurrentSerializer => SettingsUtility.Load<RequestSettings>().serializationMethod switch
         {
-            RequestSerializerType.JsonUtility => "Json",
-            RequestSerializerType.MirrorBuiltIn => "MirrorWeaver",
+            Serializer.JsonUtility => "Json",
+            Serializer.MirrorBuiltIn => "MirrorWeaver",
             _ => "MirrorWeaver"
         };
 

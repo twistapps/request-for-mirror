@@ -1,6 +1,6 @@
 ﻿namespace RequestForMirror
 {
-    public enum RequestSerializerType
+    public enum Serializer
     {
         JsonUtility,
         MirrorBuiltIn

@@ -51,7 +51,7 @@ public class NetworkManagerWithEvents : NetworkManager
         base.LateUpdate();
 
         if (!_didCallEventsThisFrame) return;
-        HasBeenCalledThisFrame = new Dictionary<ServerCallbackActionType, bool>();
+        _hasBeenCalledThisFrame = new Dictionary<ServerCallbackActionType, bool>();
         _didCallEventsThisFrame = false;
     }
 
@@ -322,7 +322,7 @@ public class NetworkManagerWithEvents : NetworkManager
         StopClient
     }
 
-    private static Dictionary<ServerCallbackActionType, bool> HasBeenCalledThisFrame =
+    private static Dictionary<ServerCallbackActionType, bool> _hasBeenCalledThisFrame =
         new Dictionary<ServerCallbackActionType, bool>();
 
     [UsedImplicitly] public static Action OnStartHostEvent;
@@ -339,7 +339,7 @@ public class NetworkManagerWithEvents : NetworkManager
     /// </summary>
     private static void CallEvent(ServerCallbackActionType eventType)
     {
-        if (HasBeenCalledThisFrame.ContainsKey(eventType) && HasBeenCalledThisFrame[eventType]) return;
+        if (_hasBeenCalledThisFrame.ContainsKey(eventType) && _hasBeenCalledThisFrame[eventType]) return;
         var action = eventType switch
         {
             ServerCallbackActionType.StartHost => OnStartHostEvent,
@@ -352,7 +352,7 @@ public class NetworkManagerWithEvents : NetworkManager
         };
 
         _didCallEventsThisFrame = true;
-        HasBeenCalledThisFrame[eventType] = true;
+        _hasBeenCalledThisFrame[eventType] = true;
         action?.Invoke();
     }
 

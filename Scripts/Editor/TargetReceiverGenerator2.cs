@@ -25,16 +25,14 @@ namespace RequestForMirror.Editor
             var requestTypes = EditorUtils.GetDerivedTypesExcludingSelf<IRequest>().Where(t => !t.IsAbstract);
 
             var list = new List<RequestMeta>();
-            // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var type in requestTypes)
             {
                 var genericArgs = type.BaseType!.GenericTypeArguments;
                 if (genericArgs == null || genericArgs.Length < 1) continue;
                 var tReqs = genericArgs.Length > 1 ? genericArgs.Take(genericArgs.Length - 1).ToArray() : null;
-
                 list.Add(new RequestMeta
                 {
-                    Name = type.Name,
+                    Name = type.Name, 
                     requestTypes = SerializableType.ArrayFromTypes(tReqs),
                     responseType = genericArgs.Last()
                 });
@@ -154,6 +152,35 @@ namespace RequestForMirror.Editor
             {
                 return meta1?.Name != meta2?.Name;
             }
+            
+            
+            //////////////////////////////////////
+            //////////////GENERATED//////////////
+            /////////////////////////////////////
+            protected bool Equals(RequestMeta other)
+            {
+                return Name == other.Name && Equals(requestTypes, other.requestTypes) && Equals(responseType, other.responseType);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (ReferenceEquals(null, obj)) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                if (obj.GetType() != this.GetType()) return false;
+                return Equals((RequestMeta)obj);
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    var hashCode = (Name != null ? Name.GetHashCode() : 0);
+                    hashCode = (hashCode * 397) ^ (requestTypes != null ? requestTypes.GetHashCode() : 0);
+                    hashCode = (hashCode * 397) ^ (responseType != null ? responseType.GetHashCode() : 0);
+                    return hashCode;
+                }
+            }
+            //////////////////////////////////////
         }
     }
 }

@@ -10,20 +10,6 @@ namespace RequestForMirror.Editor
 {
     public class RequestSettingsWindow : PackageSettingsWindow<RequestSettings>
     {
-        // protected void OnGUI()
-        // {
-        //
-        //     // CallToAction($"Generate all files marked with {nameof(IMarkedForCodeGen)}:", 
-        //     //     new Button("Generate CS", () => { Debug.Log("Button Click"); }));
-        //     //
-        //     // BeginSection("Create codegen-supported script:", true);
-        //     // InputField("Classname", ref Settings.testString);
-        //     // //InputField("SomeOtherField", "SomeOtherDefaultText");
-        //     // HorizontalButtons(new Button("Create", () => { Debug.Log("Button Click"); }),
-        //     //     new Button("Create", () => { Debug.Log("Button Click"); }));
-        //     // EndSection();
-        // }
-
         protected override void DrawGUI()
         {
             AddSection("General", () =>
@@ -55,16 +41,8 @@ namespace RequestForMirror.Editor
             Debug.Log(AssetDatabase.GUIDFromAssetPath(files[0]));
 
             foreach (var assembly in CompilationPipeline.GetAssemblies())
-                //var newRef = assembly.assemblyReferences.ToList();
-                //newRef.Add(null);
-                //CompilationPipeline.
                 if (assembly.name.ToLower().Contains(alias))
                 {
-                    // Debug.Log(AssetDatabase.FindAssets("t:Assembly", new[]
-                    // {
-                    //     Path.Combine("Packages", dependencyName)
-                    // })?[0] ?? "0");
-
                     Debug.Log(assembly.outputPath);
                     Debug.Log(CompilationPipeline.GUIDToAssemblyDefinitionReferenceGUID(
                         AssetDatabase.AssetPathToGUID(assembly.outputPath)));

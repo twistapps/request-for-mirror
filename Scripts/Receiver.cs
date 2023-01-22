@@ -42,10 +42,10 @@ namespace RequestForMirror
             RequestManager = GetComponent<RequestManagerBase>();
             _settings = SettingsUtility.Load<RequestSettings>();
             HasAdjacentRequestManager = RequestManager != null;
-            HandleLocalReceiverReady(this);
+            OnLocalReceiverReady(this);
         }
 
-        private static void HandleLocalReceiverReady(Receiver receiver)
+        private static void OnLocalReceiverReady(Receiver receiver)
         {
             _localReceiver = receiver;
 
@@ -61,15 +61,16 @@ namespace RequestForMirror
             Receiver receiver = null;
             var who = isServer ? "[Server]" : "[Client]";
 
-            if (!isServer && _localReceiver != null) return _localReceiver;
-
-            if (isServer && ReceiversByConnId.ContainsKey(clientConnId) && ReceiversByConnId[clientConnId] != null)
+            switch (isServer)
             {
-                return ReceiversByConnId[clientConnId];
+                case false when _localReceiver != null:
+                    return _localReceiver;
+                case true when ReceiversByConnId.TryGetValue(clientConnId, out receiver):
+                    return receiver;
             }
 
-            var ply = isServer ? NetworkServer.connections[clientConnId] : NetworkClient.connection;
-            foreach (var networkIdentity in ply.owned)
+            var connection = isServer ? NetworkServer.connections[clientConnId] : NetworkClient.connection;
+            foreach (var networkIdentity in connection.owned)
             {
                 receiver = networkIdentity.GetComponent<Receiver>();
                 if (receiver == null) continue;
@@ -91,14 +92,14 @@ namespace RequestForMirror
             return GetCachedReceiver(-1, false);
         }
 
-        private IRequest FindAwaitingResponse(IEnumerable<IRequest> requests, int requestId)
+        private static IRequest FindAwaitingResponse(IEnumerable<IRequest> requests, int requestId)
         {
             return requests?.FirstOrDefault(r => r.IsAwaitingResponse(requestId));
         }
 
         public IRequest FindAwaitingResponse(int requestId)
         {
-            Debugg.Log(string.Join(", ",
+            DebugLevels.Log(string.Join(", ",
                 RequestManagerBase.Global.GetComponents<IRequest>().Select(c => c.GetType().Name)));
             return FindAwaitingResponse(GetComponents<IRequest>(), requestId) ??
                    // ReSharper disable once Unity.NoNullPropagation
@@ -124,8 +125,8 @@ namespace RequestForMirror
             TRes response)
         {
             var receiver = GetCachedReceiver(target.connectionId);
-            Debugg.Log("Receiver " + receiver);
-            Debugg.Log($"[Server] Sending response for request ID {requestID}");
+            DebugLevels.Log("Receiver " + receiver);
+            DebugLevels.Log($"[Server] Sending response for request ID {requestID}");
 
 
             var tReceiver = receiver.GetType();
@@ -149,7 +150,7 @@ namespace RequestForMirror
                 method = tReceiver.GetRuntimeMethod("TargetReceiveResponseMirrorWeaver", paramTypes);
             }
 
-            Debugg.Log(method);
+            DebugLevels.Log(method);
 
             object[] parameters =
             {
@@ -165,7 +166,7 @@ namespace RequestForMirror
             if (receiver == null)
             {
                 _onLocalReceiverReadyOnce += () => SendRequest(request);
-                Debugg.Log($"Queued request {request.GetType().Name} because local receiver is not ready yet");
+                DebugLevels.Log($"Queued request {request.GetType().Name} because local receiver is not ready yet");
                 return;
             }
 
@@ -186,16 +187,19 @@ namespace RequestForMirror
             for (var i = 0; i < tReqTypes.Length; i++)
             {
                 const BindingFlags bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic;
+                
                 var fieldName = "Request";
                 if (i > 0) fieldName += i + 1; //Request2, Request3...
+                
                 var field = requestType.GetField(fieldName, bindingFlags);
                 if (field == null)
                 {
-                    Debugg.Log($"GetField() for field {fieldName} of class {requestType.Name} did return null");
+                    DebugLevels.Log($"GetField() for field {fieldName} of class {requestType.Name} did return null");
                     continue;
                 }
 
-                paramValues.Add(field.GetValue(request));
+                var requestPayload = field.GetValue(request);
+                paramValues.Add(requestPayload);
             }
 
             paramValues.Add(null); //null value for NetworkConnectionToClient will be filled up by Mirror
@@ -208,14 +212,14 @@ namespace RequestForMirror
             Status status,
             TRes response)
         {
-            Debugg.Log(
+            DebugLevels.Log(
                 $"[Client] Received response for request ID {requestID} - {response.GetType().Name} - {response}");
             var requestHandler = FindAwaitingResponse(requestID);
             if (requestHandler == null)
                 //todo: log possible losses
                 return;
             var request = (RequestBase<TRes>)requestHandler;
-            Debugg.Log(request);
+            DebugLevels.Log(request);
             request.TargetReceiveResponseMirrorWeaver(target, requestID, status, response);
         }
 

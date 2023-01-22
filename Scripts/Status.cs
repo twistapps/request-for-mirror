@@ -7,7 +7,7 @@ namespace RequestForMirror
     public class Status
     {
         public readonly bool RequestFailed;
-        [UsedImplicitly] public int Code;
+        [UsedImplicitly] public ushort Code;
         public string Message;
 
         public Status(bool ok, string message = null)
@@ -17,7 +17,7 @@ namespace RequestForMirror
             Message = message;
         }
 
-        public Status(int code, string message = null)
+        public Status(ushort code, string message = null)
         {
             Code = code;
             RequestFailed = code != 200;
@@ -35,7 +35,7 @@ namespace RequestForMirror
             return this;
         }
 
-        public static implicit operator Status(int code)
+        public static implicit operator Status(ushort code)
         {
             return new Status(code);
         }
