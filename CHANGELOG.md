@@ -1,3 +1,12 @@
+# [1.0.0](https://github.com/twistapps/request-for-mirror/compare/0.13.0...1.0.0) (2023-01-21)
+
+
+* BREAKING CHANGE: Rework package architecture ([0e2f2cc](https://github.com/twistapps/request-for-mirror/commit/0e2f2cce7a4f30490b8b0664d09fe37a4939708a))
+
+### BREAKING CHANGES
+
+* Rework package architecture
+
 # [0.13.0](https://github.com/twistapps/request-for-mirror/compare/0.12.0...0.13.0) (2023-01-21)
 
 
