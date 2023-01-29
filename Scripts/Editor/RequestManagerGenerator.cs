@@ -25,11 +25,11 @@ namespace RequestForMirror.Editor
         {
             _settings = SettingsUtility.Load<CodeGenSettings>();
             if (_settings.autoGenerateOnCompile)
-#if MODULA
+                #if MODULA && REQUESTIFY_ENABLED
                 GenerateScripts();
-#else
+            #else
                 Cleanup();
-#endif
+            #endif
         }
 
         private static void Cleanup()
@@ -44,7 +44,7 @@ namespace RequestForMirror.Editor
                 if (File.Exists(path))
                     File.Delete(path);
         }
-#if MODULA
+        #if MODULA && REQUESTIFY_ENABLED
         public static void GenerateScripts(params string[] ignored)
         {
             var builder = new CodeGenTemplateBuilder();
@@ -62,7 +62,11 @@ namespace RequestForMirror.Editor
 
             builder.AppendLine("#if MODULA");
 
+            builder.AppendLine("#if MIRROR");
             builder.Using("Mirror");
+            builder.AppendLine("#elif UNITY_NETCODE");
+            builder.Using("Unity.Netcode");
+            builder.AppendLine("#endif");
             builder.Using("Modula");
             builder.Using("Modula.Common");
             builder.Using("UnityEngine");
@@ -78,11 +82,25 @@ namespace RequestForMirror.Editor
             builder.Append(";");
 
             builder.EmptyLines(1);
-            foreach (var type in types)
-            {
-                var name = type.Name;
-                builder.AppendLine($"public static {name} {name} => {SingletonInstanceName}.GetModule<{name}>();");
-            }
+            // foreach (var type in types)
+            // {
+            //     var name = type.Name;
+            //     builder.AppendLine($"public static {name} {name} => {SingletonInstanceName}.GetModule<{name}>();");
+            // }
+            
+            /*
+             *  public TRequest Req<TRequest>() where TRequest : IRequest, IModule
+                {
+                    var module = GetModule<TRequest>();
+                    return module;
+                }
+             * 
+             */
+
+            builder.AppendLine("public static TRequest Req<TRequest>() where TRequest : IRequest, IModule");
+            builder.OpenCurly();
+            builder.AppendLine("return Instance.GetModule<TRequest>();");
+            builder.CloseCurly();
 
             builder.EmptyLines(1);
             AddSingleton(builder);
@@ -91,9 +109,9 @@ namespace RequestForMirror.Editor
             var lines = builder.GetVariableLines(CodeGenTemplateBuilder.CLASS_INNER).ToList();
             var awakeLine = lines.FindIndex(line => line.Contains("void Awake()"));
             lines[awakeLine] = "    protected override void Awake()";
-            lines.Insert(awakeLine + 2,
-                "        Receiver.GlobalRequestManager = GetComponent<NetworkIdentity>();");
-
+            //lines.Insert(awakeLine + 2,
+            //    "        Receiver.GlobalRequestManager = GetComponent<NetworkIdentity>();");
+            
             builder.SetClassInner(lines.ToArray());
             builder.ReplaceClassInnerVar();
 
@@ -102,7 +120,7 @@ namespace RequestForMirror.Editor
             var outputPath = Path.ChangeExtension(RequestManagerPath, ".cs");
             builder.SaveToCsFile(outputPath);
         }
-#endif
+        #endif
         private static void AddSingleton(CodeGenTemplateBuilder builder)
         {
             builder.AppendLine("#region Singleton");

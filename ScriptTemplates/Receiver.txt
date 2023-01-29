@@ -1,6 +1,11 @@
 using System;
-using Mirror;
 using RequestForMirror;
+
+#if MIRROR
+using Mirror;
+#elif UNITY_NETCODE
+using Unity.Netcode;
+#endif
 
 public partial class $CLASSNAME$ : Receiver
 {

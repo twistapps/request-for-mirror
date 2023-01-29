@@ -9,12 +9,14 @@ namespace RequestForMirror
         public LogLevel logLevel;
         public bool cacheMethodInfo = true;
 
-        public static string CurrentSerializer => SettingsUtility.Load<RequestSettings>().serializationMethod switch
-        {
-            Serializer.JsonUtility => "Json",
-            Serializer.MirrorBuiltIn => "MirrorWeaver",
-            _ => "MirrorWeaver"
-        };
+        // public static string CurrentSerializer => SettingsUtility.Load<RequestSettings>().serializationMethod switch
+        // {
+        //     Serializer.JsonUtility => "Json",
+        //     Serializer.MirrorBuiltIn => "MirrorWeaver",
+        //     _ => "MirrorWeaver"
+        // };
+
+        public static string CurrentSerializer => "ClientRpc";
 
         public override string GetEditorWindowTitle()
         {

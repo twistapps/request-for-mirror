@@ -1,4 +1,4 @@
-﻿#if MODULA
+﻿#if MODULA && REQUESTIFY_ENABLED
 using System;
 using Modula;
 using Modula.Common;

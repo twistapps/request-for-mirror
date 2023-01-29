@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if REQUESTIFY_ENABLED
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using TwistCore;
@@ -68,3 +69,4 @@ namespace RequestForMirror.Editor
         }
     }
 }
+#endif

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using TwistCore.Editor;
 using TwistCore.Editor.CodeGen;
 using UnityEditor;
@@ -41,6 +42,7 @@ namespace RequestForMirror.Editor
             return list.ToArray();
         }
 
+        #if REQUESTIFY_ENABLED
         [DidReloadScripts(2)]
         private static void GenerateTargetReceiver()
         {
@@ -62,6 +64,13 @@ namespace RequestForMirror.Editor
             builder.GenerateFromTemplate(template);
             builder.SaveToCsFile(OutputPath);
         }
+        #else
+        [DidReloadScripts(2)]
+        private static void RunCleanup()
+        {
+            Cleanup();
+        }
+        #endif
 
         private bool ShouldGenerate(IEnumerable<RequestMeta> newRequests)
         {
@@ -102,7 +111,18 @@ namespace RequestForMirror.Editor
             var @params = request.requestTypes?.Select(t => t.SerializedType.Name + " request").ToList() ??
                           new List<string>();
             for (var i = 1; i < @params.Count; i++) @params[i] += i + 1; //TReq2 request2, TReq3 request3 etc.
-            @params.Add("NetworkConnectionToClient sender = null");
+            //@params.Add("NetworkConnectionToClient sender = null");
+
+            var sb = new StringBuilder();
+            sb.AppendLine();
+            sb.AppendLine("#if MIRROR");
+            sb.AppendLine("NetworkConnectionToClient sender = null");
+            sb.AppendLine("#elif UNITY_NETCODE");
+            sb.AppendLine("ServerRpcParams sender = default");
+            sb.AppendLine("#endif");
+            sb.AppendLine();
+            
+            @params.Add(sb.ToString());
 
             var paramNames = new List<string>();
             if (paramNames == null) throw new ArgumentNullException(nameof(paramNames));
@@ -117,8 +137,15 @@ namespace RequestForMirror.Editor
             paramNames.Add("sender");
 
             //builder.AppendLine("[Command]");
+            builder.AppendLine("#if MIRROR");
             builder.AppendLine("[Command(requiresAuthority = false)]");
-            builder.AppendLine($"public void CmdHandleRequest_{request.Name}({string.Join(", ", @params)})");
+            
+            builder.AppendLine("#elif UNITY_NETCODE");
+            builder.AppendLine("[ServerRpc(RequireOwnership = false)]");
+            
+            builder.AppendLine("#endif");
+            
+            builder.AppendLine($"public void CmdHandleRequest_{request.Name}_ServerRpc({string.Join(", ", @params)})");
             builder.OpenCurly();
             builder.AppendLine($"PushRequestOnServer(typeof({request.Name}), {string.Join(", ", paramNames)});");
             builder.CloseCurly();
@@ -126,6 +153,8 @@ namespace RequestForMirror.Editor
 
         private static void AddResponse(CodeGenBuilder builder, Type responseType)
         {
+            builder.AppendLine("#if MIRROR");
+            
             builder.AppendLine("[TargetRpc]");
             builder.AppendLine("public void TargetReceiveResponse$(NetworkConnection target, " +
                                "int requestId, Status status, $ response)",
@@ -133,6 +162,20 @@ namespace RequestForMirror.Editor
             builder.OpenCurly();
             builder.AppendLine("PushResponseOnClient(target, requestId, status, response);");
             builder.CloseCurly();
+            
+            builder.AppendLine("#elif UNITY_NETCODE");
+            
+            builder.AppendLine("[ClientRpc]");
+            builder.AppendLine("public void TargetReceiveResponse$(" +
+                               "int requestId, Status status, $ response, " +
+                               "ClientRpcParams target = default" +
+                               ")",
+                RequestSettings.CurrentSerializer, responseType.Name);
+            builder.OpenCurly();
+            builder.AppendLine("PushResponseOnClient(target, requestId, status, response);");
+            builder.CloseCurly();
+            
+            builder.AppendLine("#endif");
         }
 
         [Serializable]

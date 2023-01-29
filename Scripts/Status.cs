@@ -1,14 +1,17 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
+using Unity.Netcode;
 
 namespace RequestForMirror
 {
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    public class Status
+    public class Status : INetworkSerializable
     {
-        public readonly bool RequestFailed;
+        public bool RequestFailed;
         [UsedImplicitly] public ushort Code;
         public string Message;
+        public bool IsBroadcast;
+        public ushort requestType; //if sending to all
 
         public Status(bool ok, string message = null)
         {
@@ -35,9 +38,27 @@ namespace RequestForMirror
             return this;
         }
 
+        public Status BroadcastResponse()
+        {
+            IsBroadcast = true;
+            return this;
+        }
+
         public static implicit operator Status(ushort code)
         {
             return new Status(code);
+        }
+
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            serializer.SerializeValue(ref RequestFailed);
+            if (RequestFailed)
+            {
+                serializer.SerializeValue(ref Message);
+                serializer.SerializeValue(ref Code);
+            }
+            serializer.SerializeValue(ref IsBroadcast);
+            if (IsBroadcast) serializer.SerializeValue(ref requestType);
         }
     }
 }

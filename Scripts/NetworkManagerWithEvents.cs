@@ -1,7 +1,12 @@
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+#if MIRROR
 using Mirror;
+#endif
+#if UNITY_NETCODE
+using Unity.Netcode;
+#endif
 
 // ReSharper disable UnusedMember.Global
 
@@ -9,6 +14,9 @@ using Mirror;
 	Documentation: https://mirror-networking.gitbook.io/docs/components/network-manager
 	API Reference: https://mirror-networking.com/docs/api/Mirror.NetworkManager.html
 */
+
+
+#if MIRROR
 
 public class NetworkManagerWithEvents : NetworkManager
 {
@@ -400,3 +408,4 @@ public class NetworkManagerWithEvents : NetworkManager
 
     #endregion
 }
+#endif

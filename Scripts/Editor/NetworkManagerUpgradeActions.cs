@@ -1,3 +1,4 @@
+#if MIRROR
 using System;
 using System.Collections.Generic;
 using Mirror;
@@ -39,3 +40,4 @@ namespace RequestForMirror
         }
     }
 }
+#endif

@@ -1,9 +1,13 @@
-﻿#if MODULA
+﻿#if MODULA && REQUESTIFY_ENABLED
 using System;
 using System.Linq;
-using Mirror;
 using Modula;
+using Modula.Common;
+using Unity.Netcode;
 using UnityEngine;
+#if MIRROR
+using Mirror;
+#endif
 
 namespace RequestForMirror
 {
@@ -13,7 +17,11 @@ namespace RequestForMirror
         private static RequestManagerBase _globalInstance;
         public static RequestManagerBase Global => _globalInstance ??= FindGlobalInstance();
 
+        #if MIRROR
         public bool IsGlobal => GetComponent<NetworkIdentity>() == null;
+        #elif UNITY_NETCODE
+        public bool IsGlobal => GetComponent<NetworkObject>() == null;
+        #endif
 
         protected override void Awake()
         {
@@ -24,7 +32,7 @@ namespace RequestForMirror
         {
             var requestManagers = FindObjectsOfType<RequestManagerBase>();
             Debug.Log("Found request managers in scene: " + requestManagers.Length);
-            return requestManagers.FirstOrDefault(manager => manager.GetComponent<NetworkIdentity>() == null);
+            return requestManagers.FirstOrDefault(manager => manager.IsGlobal);
         }
 
         public void Dispatch(Type requestType, object[] args)

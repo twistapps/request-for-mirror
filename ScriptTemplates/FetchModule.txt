@@ -10,11 +10,19 @@ using RequestForMirror;
 
 public partial class $CLASSNAME$
 {
+    #if MIRROR
     [Command(requiresAuthority = false)]
     protected override void CmdHandleRequest(NetworkConnectionToClient sender = null)
     {
         base.CmdHandleRequest(sender);
     }
+    #elif UNITY_NETCODE
+    [ServerRpc(RequireOwnership = false)]
+    protected override void CmdHandleRequest(ServerRpcParams serverRpcParams = default)
+    {
+        base.CmdHandleRequest(sender);
+    }
+    #endif
     
     //[TargetRpc]
     //public override void TargetReceiveResponse$SERIALIZER$(NetworkConnection target, int requestId, Status status, $RESPONSE_TYPE$ response)
