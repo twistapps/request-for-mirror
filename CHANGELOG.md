@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/twistapps/request-for-mirror/compare/1.1.0...1.2.0) (2023-01-29)
+
+
+### Features
+
+* Netcode for GameObjects integration ([d86211b](https://github.com/twistapps/request-for-mirror/commit/d86211bb9fa0f579c4209c02d2ce73da064b5d21))
+
 # [1.1.0](https://github.com/twistapps/request-for-mirror/compare/1.0.0...1.1.0) (2023-01-22)
 
 
