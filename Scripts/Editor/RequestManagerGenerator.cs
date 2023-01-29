@@ -87,7 +87,7 @@ namespace RequestForMirror.Editor
             //     var name = type.Name;
             //     builder.AppendLine($"public static {name} {name} => {SingletonInstanceName}.GetModule<{name}>();");
             // }
-            
+
             /*
              *  public TRequest Req<TRequest>() where TRequest : IRequest, IModule
                 {
@@ -111,7 +111,7 @@ namespace RequestForMirror.Editor
             lines[awakeLine] = "    protected override void Awake()";
             //lines.Insert(awakeLine + 2,
             //    "        Receiver.GlobalRequestManager = GetComponent<NetworkIdentity>();");
-            
+
             builder.SetClassInner(lines.ToArray());
             builder.ReplaceClassInnerVar();
 

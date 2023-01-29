@@ -22,13 +22,13 @@ public class NetworkConnection
     // ReSharper disable once InconsistentNaming
     public readonly ulong connectionId;
 
-    public NetworkObject identity => NetworkManager.Singleton.ConnectedClients
-        .FirstOrDefault(c => c.Key == connectionId).Value.PlayerObject;
-
     public NetworkConnection(ulong connectionId)
     {
         this.connectionId = connectionId;
     }
+
+    public NetworkObject identity => NetworkManager.Singleton.ConnectedClients
+        .FirstOrDefault(c => c.Key == connectionId).Value.PlayerObject;
 
     public override bool Equals(object obj)
     {
@@ -45,7 +45,10 @@ public class NetworkConnection
         return connectionId.GetHashCode();
     }
 
-    public static explicit operator ulong(NetworkConnection src) => src.connectionId;
+    public static explicit operator ulong(NetworkConnection src)
+    {
+        return src.connectionId;
+    }
 }
 
 public class NetworkConnectionToClient : NetworkConnection
@@ -67,7 +70,7 @@ namespace RequestForMirror
         private const int localConnectionId = 0;
         #elif UNITY_NETCODE
         private static readonly Dictionary<ulong, Receiver> ReceiversByConnId = new Dictionary<ulong, Receiver>();
-        private static ulong localConnectionId => Unity.Netcode.NetworkManager.Singleton.LocalClientId;
+        private static ulong localConnectionId => NetworkManager.Singleton.LocalClientId;
         #endif
         private static Receiver _localReceiver;
 
@@ -87,11 +90,12 @@ namespace RequestForMirror
         #elif UNITY_NETCODE
         private static readonly Type[] ResponseMethodParamTypes =
         {
-            typeof(int), 
-            typeof(Status), 
-            null, 
+            typeof(int),
+            typeof(Status),
+            null,
             typeof(ClientRpcParams)
         };
+
         private const int ResponseTypeIndex = 2;
         #endif
 
@@ -181,7 +185,7 @@ namespace RequestForMirror
             #if MIRROR
             return GetCachedReceiver(0, false);
             #elif UNITY_NETCODE
-            var clientId = Unity.Netcode.NetworkManager.Singleton.LocalClientId;
+            var clientId = NetworkManager.Singleton.LocalClientId;
             return GetCachedReceiver(clientId, false);
             #endif
         }
@@ -204,8 +208,8 @@ namespace RequestForMirror
         {
             if (ResponseMethods.TryGetValue(responseType, out var foundMethod))
                 return foundMethod;
-            
-            
+
+
             ResponseMethodParamTypes[ResponseTypeIndex] = responseType;
             var method = receiverType.GetRuntimeMethod(methodName, ResponseMethodParamTypes);
             if (method != null) ResponseMethods[responseType] = method;
@@ -213,11 +217,11 @@ namespace RequestForMirror
         }
         //private static RequestSettings Settings => _settings ??= SettingsUtility.Load<RequestSettings>();
 
-        private static readonly ClientRpcParams ParamsBroadcast = new ClientRpcParams()
+        private static readonly ClientRpcParams ParamsBroadcast = new ClientRpcParams
         {
             Send = new ClientRpcSendParams()
         };
-        
+
         public static void SendResponse<TRes>(
             #if MIRROR
             NetworkConnection target,
@@ -229,10 +233,10 @@ namespace RequestForMirror
             TRes response)
         {
             var receiver = GetCachedReceiver(target
-                #if MIRROR
+                    #if MIRROR
                 .connectionId
-                #elif UNITY_NETCODE
-                .Send.TargetClientIds[0]
+                    #elif UNITY_NETCODE
+                    .Send.TargetClientIds[0]
                 #endif
             );
             DebugLevels.Log("Receiver " + receiver);
@@ -266,21 +270,18 @@ namespace RequestForMirror
             }
 
             DebugLevels.Log(method);
-            
+
             #if UNITY_NETCODE
-            if (status.IsBroadcast)
-            {
-                target = ParamsBroadcast;
-            }
+            if (status.IsBroadcast) target = ParamsBroadcast;
             #endif
-            
+
 
             #if MIRROR
             object[] parameters = { target, requestID, status, response };
             #elif UNITY_NETCODE
             object[] parameters = { requestID, status, response, target };
             #endif
-            
+
             method?.Invoke(receiver, parameters);
         }
 
@@ -353,7 +354,8 @@ namespace RequestForMirror
             var requestHandler = FindAwaitingResponse(requestID);
             if (requestHandler == null)
             {
-                if (!IsLocalPlayer && status.IsBroadcast && RequestManagerBase.Global.attachments.Count > status.requestType)
+                if (!IsLocalPlayer && status.IsBroadcast &&
+                    RequestManagerBase.Global.attachments.Count > status.requestType)
                 {
                     Debug.Log(status.requestType);
                     var broadcastHandler = (RequestBase<TRes>)RequestManagerBase.Global.attachments[status.requestType];
@@ -362,12 +364,10 @@ namespace RequestForMirror
                     else
                         broadcastHandler.BroadcastHandler?.Invoke(response);
                 }
-                else
-                {
-                    //todo: log possible losses
-                }
+
                 return;
             }
+
             var request = (RequestBase<TRes>)requestHandler;
             DebugLevels.Log(request);
 
@@ -377,8 +377,8 @@ namespace RequestForMirror
                 #elif UNITY_NETCODE
                 clientRpcParams,
                 #endif
-                requestID, 
-                status, 
+                requestID,
+                status,
                 response
             );
         }

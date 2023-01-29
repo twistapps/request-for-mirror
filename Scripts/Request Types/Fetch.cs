@@ -5,7 +5,7 @@ using Mirror;
 
 namespace RequestForMirror
 {
-#if REQUESTIFY_ENABLED
+    #if REQUESTIFY_ENABLED
     [SuppressMessage("ReSharper", "MemberCanBeProtected.Global")]
     public abstract class Fetch<TRes> : RequestBase<TRes>
     {
@@ -22,5 +22,5 @@ namespace RequestForMirror
         {
         }
     }
-#endif
+    #endif
 }

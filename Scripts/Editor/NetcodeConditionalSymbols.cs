@@ -7,7 +7,7 @@ namespace RequestForMirror.Editor
     {
         public const string UNITY_NETCODE = "UNITY_NETCODE";
         public const string PackageName = "com.unity.netcode.gameobjects";
-        
+
         public override string GetSymbols()
         {
             return UNITY_NETCODE;

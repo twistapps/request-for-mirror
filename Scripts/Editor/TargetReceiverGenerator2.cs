@@ -33,7 +33,7 @@ namespace RequestForMirror.Editor
                 var tReqs = genericArgs.Length > 1 ? genericArgs.Take(genericArgs.Length - 1).ToArray() : null;
                 list.Add(new RequestMeta
                 {
-                    Name = type.Name, 
+                    Name = type.Name,
                     requestTypes = SerializableType.ArrayFromTypes(tReqs),
                     responseType = genericArgs.Last()
                 });
@@ -121,7 +121,7 @@ namespace RequestForMirror.Editor
             sb.AppendLine("ServerRpcParams sender = default");
             sb.AppendLine("#endif");
             sb.AppendLine();
-            
+
             @params.Add(sb.ToString());
 
             var paramNames = new List<string>();
@@ -139,12 +139,12 @@ namespace RequestForMirror.Editor
             //builder.AppendLine("[Command]");
             builder.AppendLine("#if MIRROR");
             builder.AppendLine("[Command(requiresAuthority = false)]");
-            
+
             builder.AppendLine("#elif UNITY_NETCODE");
             builder.AppendLine("[ServerRpc(RequireOwnership = false)]");
-            
+
             builder.AppendLine("#endif");
-            
+
             builder.AppendLine($"public void CmdHandleRequest_{request.Name}_ServerRpc({string.Join(", ", @params)})");
             builder.OpenCurly();
             builder.AppendLine($"PushRequestOnServer(typeof({request.Name}), {string.Join(", ", paramNames)});");
@@ -154,7 +154,7 @@ namespace RequestForMirror.Editor
         private static void AddResponse(CodeGenBuilder builder, Type responseType)
         {
             builder.AppendLine("#if MIRROR");
-            
+
             builder.AppendLine("[TargetRpc]");
             builder.AppendLine("public void TargetReceiveResponse$(NetworkConnection target, " +
                                "int requestId, Status status, $ response)",
@@ -162,9 +162,9 @@ namespace RequestForMirror.Editor
             builder.OpenCurly();
             builder.AppendLine("PushResponseOnClient(target, requestId, status, response);");
             builder.CloseCurly();
-            
+
             builder.AppendLine("#elif UNITY_NETCODE");
-            
+
             builder.AppendLine("[ClientRpc]");
             builder.AppendLine("public void TargetReceiveResponse$(" +
                                "int requestId, Status status, $ response, " +
@@ -174,7 +174,7 @@ namespace RequestForMirror.Editor
             builder.OpenCurly();
             builder.AppendLine("PushResponseOnClient(target, requestId, status, response);");
             builder.CloseCurly();
-            
+
             builder.AppendLine("#endif");
         }
 
@@ -195,21 +195,22 @@ namespace RequestForMirror.Editor
             {
                 return meta1?.Name != meta2?.Name;
             }
-            
-            
+
+
             //////////////////////////////////////
             //////////////GENERATED//////////////
             /////////////////////////////////////
             protected bool Equals(RequestMeta other)
             {
-                return Name == other.Name && Equals(requestTypes, other.requestTypes) && Equals(responseType, other.responseType);
+                return Name == other.Name && Equals(requestTypes, other.requestTypes) &&
+                       Equals(responseType, other.responseType);
             }
 
             public override bool Equals(object obj)
             {
                 if (ReferenceEquals(null, obj)) return false;
                 if (ReferenceEquals(this, obj)) return true;
-                if (obj.GetType() != this.GetType()) return false;
+                if (obj.GetType() != GetType()) return false;
                 return Equals((RequestMeta)obj);
             }
 
@@ -217,7 +218,7 @@ namespace RequestForMirror.Editor
             {
                 unchecked
                 {
-                    var hashCode = (Name != null ? Name.GetHashCode() : 0);
+                    var hashCode = Name != null ? Name.GetHashCode() : 0;
                     hashCode = (hashCode * 397) ^ (requestTypes != null ? requestTypes.GetHashCode() : 0);
                     hashCode = (hashCode * 397) ^ (responseType != null ? responseType.GetHashCode() : 0);
                     return hashCode;

@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Modula;
-using Unity.Collections;
-using UnityEngine;
-#if MIRROR
+﻿#if MIRROR
 using Mirror;
 #elif UNITY_NETCODE
 using Unity.Netcode;
 #endif
+using System;
+using System.Collections.Generic;
+using Modula;
+using UnityEngine;
 
 namespace RequestForMirror
 {
@@ -56,8 +55,8 @@ namespace RequestForMirror
             //     #elif UNITY_NETCODE
             //     Sender;
             // #endif
-            
-            
+
+
             DebugLevels.Log($"[Server] Generated request Id: {_requestId.ID}; sender: {Sender.connectionId}");
             var status = OnRequest();
 
@@ -65,9 +64,9 @@ namespace RequestForMirror
             ClientRpcParams sendParams;
             if (!_clientIdsToSendParams.TryGetValue(Sender.connectionId, out sendParams))
             {
-                sendParams = new ClientRpcParams()
+                sendParams = new ClientRpcParams
                 {
-                    Send = new ClientRpcSendParams()
+                    Send = new ClientRpcSendParams
                     {
                         TargetClientIds = new[] { Sender.connectionId }
                     }
@@ -75,11 +74,12 @@ namespace RequestForMirror
                 _clientIdsToSendParams[Sender.connectionId] = sendParams;
             }
             #endif
-            
+
             #if MIRROR
             Receiver.SendResponse(Sender, _requestId.ID, status, Response.payload);
             #elif UNITY_NETCODE
-            if (status.IsBroadcast) status.requestType = Convert.ToUInt16(RequestManagerBase.Global.attachments.IndexOf(this as IModule));
+            if (status.IsBroadcast)
+                status.requestType = Convert.ToUInt16(RequestManagerBase.Global.attachments.IndexOf(this as IModule));
 
             Receiver.SendResponse(sendParams, _requestId.ID, status, Response.payload);
             #endif
@@ -109,7 +109,7 @@ namespace RequestForMirror
             int id,
             Status status,
             TRes response
-            )
+        )
         {
             Response = new Response<TRes>();
             if (response != null)
@@ -128,7 +128,7 @@ namespace RequestForMirror
             if (!_awaitingResponse.ContainsKey(id))
             {
                 DebugLevels.LogError($"{GetType().Name}: callback with id {id} not found. Callbacks won't trigger");
-                    return;
+                return;
             }
 
             var actions = _awaitingResponse[id];
@@ -148,8 +148,9 @@ namespace RequestForMirror
         #region Client Actions
 
         public delegate void FailDelegate(string reason);
+
         public delegate void ResponseDelegate(TRes res);
-        
+
         public ResponseDelegate BroadcastHandler;
         public FailDelegate BroadcastFailHandler;
 
@@ -171,12 +172,12 @@ namespace RequestForMirror
 
         #endregion
     }
-    
+
     // public abstract class RequestBase<TRes, TBroadcast> : RequestBase<TRes>
     // {
     //     public delegate void BroadcastDelegate(TBroadcast res);
     //     public BroadcastDelegate BroadcastResponseHandler;
     //     public FailDelegate BroadcastFailHandler;
     // }
-#endif
+    #endif
 }

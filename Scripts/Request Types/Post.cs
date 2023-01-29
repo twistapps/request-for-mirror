@@ -1,11 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
-#if MIRROR
+﻿#if MIRROR
 using Mirror;
 #endif
 
 namespace RequestForMirror
 {
-#if REQUESTIFY_ENABLED
+    #if REQUESTIFY_ENABLED
     public abstract class Post<TReq, TRes> : RequestBase<TRes>
     {
         // ReSharper disable once MemberCanBePrivate.Global
@@ -31,7 +30,7 @@ namespace RequestForMirror
     {
         // ReSharper disable once MemberCanBePrivate.Global
         protected TReq2 Request2;
-    
+
         #if MIRROR
         [Client]
         #endif
@@ -43,14 +42,14 @@ namespace RequestForMirror
             RegisterResponseCallbacks(responseCallback, failCallback);
             Receiver.SendRequest(this);
         }
-    
+
         protected override void HandleRequestArgs(object[] args)
         {
             Request = (TReq)args[0];
             Request2 = (TReq2)args[1];
         }
     }
-    
+
     // public abstract class Post<TReq, TRes, TBroadcast> : RequestBase<TRes, TBroadcast>
     // {
     //     protected TReq Request;
@@ -67,5 +66,5 @@ namespace RequestForMirror
     //         Request = (TReq)args[0];
     //     }
     // }
-#endif
+    #endif
 }

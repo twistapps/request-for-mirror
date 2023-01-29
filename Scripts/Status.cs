@@ -7,10 +7,10 @@ namespace RequestForMirror
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public class Status : INetworkSerializable
     {
-        public bool RequestFailed;
         [UsedImplicitly] public ushort Code;
-        public string Message;
         public bool IsBroadcast;
+        public string Message;
+        public bool RequestFailed;
         public ushort requestType; //if sending to all
 
         public Status(bool ok, string message = null)
@@ -32,6 +32,19 @@ namespace RequestForMirror
         {
         }
 
+        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            serializer.SerializeValue(ref RequestFailed);
+            if (RequestFailed)
+            {
+                serializer.SerializeValue(ref Message);
+                serializer.SerializeValue(ref Code);
+            }
+
+            serializer.SerializeValue(ref IsBroadcast);
+            if (IsBroadcast) serializer.SerializeValue(ref requestType);
+        }
+
         public Status SetMessage(string message)
         {
             Message = message;
@@ -47,18 +60,6 @@ namespace RequestForMirror
         public static implicit operator Status(ushort code)
         {
             return new Status(code);
-        }
-
-        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-        {
-            serializer.SerializeValue(ref RequestFailed);
-            if (RequestFailed)
-            {
-                serializer.SerializeValue(ref Message);
-                serializer.SerializeValue(ref Code);
-            }
-            serializer.SerializeValue(ref IsBroadcast);
-            if (IsBroadcast) serializer.SerializeValue(ref requestType);
         }
     }
 }

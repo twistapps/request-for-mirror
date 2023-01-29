@@ -31,20 +31,20 @@ namespace RequestForMirror
                 _hasBeenCalledThisFrame.Clear();
             };
 
-            nm.OnClientConnectedCallback += (clientId) =>
+            nm.OnClientConnectedCallback += clientId =>
             {
                 if (clientId == nm.LocalClientId) CallEvent(ServerCallbackActionType.StartClient);
                 _hasBeenCalledThisFrame.Clear();
             };
 
-            nm.OnClientDisconnectCallback += (clientId) =>
+            nm.OnClientDisconnectCallback += clientId =>
             {
                 CallEvent(ServerCallbackActionType.StopClient);
                 _hasBeenCalledThisFrame.Clear();
             };
         }
-        
-        
+
+
         #region Events
 
         private enum ServerCallbackActionType
@@ -162,7 +162,7 @@ namespace RequestForMirror
                 action();
             #endif
         }
-        
+
         #endregion
     }
 }

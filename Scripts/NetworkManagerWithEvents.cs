@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using JetBrains.Annotations;
 #if MIRROR
 using Mirror;
 #endif
 #if UNITY_NETCODE
-using Unity.Netcode;
 #endif
 
 // ReSharper disable UnusedMember.Global
@@ -17,7 +13,6 @@ using Unity.Netcode;
 
 
 #if MIRROR
-
 public class NetworkManagerWithEvents : NetworkManager
 {
     // Overrides the base singleton so we don't

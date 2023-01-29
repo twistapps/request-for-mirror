@@ -5,6 +5,7 @@ namespace RequestForMirror.Editor
     public class RequestifyEnabledConditionalSymbols : ConditionalDefineSymbols
     {
         public const string REQUESTIFY_ENABLED = "REQUESTIFY_ENABLED";
+
         public override string GetSymbols()
         {
             return REQUESTIFY_ENABLED;

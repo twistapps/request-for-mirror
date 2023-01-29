@@ -4,7 +4,6 @@ using Mirror;
 using Unity.Netcode;
 #endif
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 #if REQUESTIFY_ENABLED
@@ -57,7 +56,7 @@ namespace RequestForMirror
                         RequestIdsPerClient[client.Value.connectionId] = 0;
 
             #elif UNITY_NETCODE
-            
+
             if (!NetworkManager.Singleton.IsServer) return;
 
             foreach (var clientId in NetworkManager.Singleton.ConnectedClientsIds)
@@ -128,7 +127,7 @@ namespace RequestForMirror
                 .connectionId
                 #endif
             ].Next();
-            
+
             return id;
         }
     }
